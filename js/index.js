@@ -8,16 +8,12 @@
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
-    div1.textContent=`Idle Poll, Round #1.
-You have 10 Points.
-Options:
-[O1] +100 Points
-[O2] x10 Points`;
+    div1.innerHTML=`Idle Poll, Round #1.<br>You have 10 Points.<br>Options:<br>[O1] +100 Points<br>[O2] x10 Points`;
     app.append(div1);
     var click1=document.createElement("button");
     click1.id="click1";
     click1.textContent="[O1]";
-    click1.addEventListener("click",()=>{document.body.innerHTML+="\nYou did not gain 100 points sadly";});
+    click1.addEventListener("click",()=>{document.body.innerHTML+="You did not gain 100 points sadly";});
     div2.append(click1);
     app.append(div2);
     document.body.append(app);
