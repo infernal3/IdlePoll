@@ -2,10 +2,28 @@
   
   var U1Scaling=function U1Scaling(x){
     if(typeof(x)!=='number'||!isFinite(x)||x<0)return 0;
+    return void 0;
   }
   var main=function main(){
-    // TODO
-    document.body.innerHTML+=`<div id="root">If this text appears, then my code is working</div>`;
+    var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div");
+    app.id="app";
+    div1.id="idleData";
+    div2.id="choices";
+    
+    
+    div1.textContent=`Idle Poll, Round #1.
+You have 10 Points.
+Options:
+[O1] +100 Points
+[O2] x10 Points`;
+    app.append(div1);
+    var click1=document.createElement("button");
+    click1.id="click1";
+    click1.textContent="[O1]";
+    click1.addEventListener("click",()=>{document.body.innerHTML+="\nYou did not gain 100 points sadly";});
+    div2.append(click1);
+    app.append(div2);
+    document.body.append(app);
   }
   main();
 }).call(this);
