@@ -1,5 +1,4 @@
 (function(){
-  
   var U1Scaling=function U1Scaling(x){
     if(typeof(x)!=='number'||!isFinite(x)||x<0)return 0;
     return void 0;
@@ -9,8 +8,6 @@
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
-    
-    
     div1.textContent=`Idle Poll, Round #1.
 You have 10 Points.
 Options:
