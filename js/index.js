@@ -15,7 +15,7 @@
     var click1=document.createElement("button");
     click1.id="click1";
     click1.textContent="[O1]";
-    click1.addEventListener("click",()=>{document.body.innerHTML+="You did not gain 100 points sadly";});
+    click1.addEventListener("click",O1);
     div2.append(click1);
     app.append(div2);
     document.body.append(app);
@@ -29,7 +29,12 @@
     var Data={};
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Points")]=10;
+    Data[L.get("Round")]=1;
     return Data;
+  }
+  var O1=function O1(){
+    Data[L.get("Points")]+=100;
+    Data[L.get("Round")]+=1;
   }
   var main=function main(){
     setupHTML();
