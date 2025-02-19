@@ -48,10 +48,12 @@
     return Data;
   }
   var HandleAction=function HandleAction(action){
+    console.log("1? "+action);
     if(Date.now()-Data[L.get("Last")]<60000){
       el("delay").textContent=randomDelayMsg();
       console.log(`Action "${action}" prevented due to 1 minute action cooldown.`);
     }
+    console.log("2? "+action);
     switch(action){
       case "O1":
         O1();
