@@ -47,7 +47,7 @@
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Points")]=10;
     Data[L.get("Round")]=1;
-    Data[L.get("Last")]=Date.now();
+    Data[L.get("Last")]=Date.now()-60000;
     return Data;
   }
   var HandleAction=function HandleAction(action){
