@@ -19,7 +19,7 @@
   }
   var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["U",".VXBncmF"],["O",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
   var setupHTML=function setupHTML(){
-    var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div");
+    var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
@@ -28,9 +28,13 @@
     var click1=document.createElement("button");
     click1.id="click1";
     click1.textContent="[O1]";
-    click1.addEventListener("click",()=>{console.log("0? O1");HandleAction("O1")});
+    click1.addEventListener("click",()=>{
+      console.log("0? O1");
+      HandleAction("O1");
+    });
     div2.append(click1);
-    div2.innerHTML+=`<div id="delay"></div>`;
+    div3.id="delay";
+    div2.append(div3);
     app.append(div2);
     document.body.append(app);
   }
