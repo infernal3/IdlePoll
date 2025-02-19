@@ -29,7 +29,6 @@
     click1.id="click1";
     click1.textContent="[O1]";
     click1.addEventListener("click",()=>{
-      console.log("0? O1");
       HandleAction("O1");
     });
     div2.append(click1);
@@ -52,12 +51,11 @@
     return Data;
   }
   var HandleAction=function HandleAction(action){
-    console.log("1? "+action);
     if(Date.now()-Data[L.get("Last")]<60000){
       el("delay").textContent=randomDelayMsg();
       console.log(`Action "${action}" prevented due to 1 minute action cooldown.`);
+      return;
     }
-    console.log("2? "+action);
     switch(action){
       case "O1":
         O1();
