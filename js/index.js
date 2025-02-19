@@ -10,7 +10,7 @@
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
-    div1.innerHTML=`Idle Poll, Round #<span id="round">NaN</span>.<br>You have <span id="points">NaN</span> Points.<br>Options:<br>[O1] +100 Points<br>[O2] x10 Points`;
+    div1.innerHTML=`Idle Poll, Round #<span id="round">[Error]</span>.<br>You have <span id="points">[Error]</span> Points.<br>Options:<br>[O1] +100 Points<br>[O2] x10 Points`;
     app.append(div1);
     var click1=document.createElement("button");
     click1.id="click1";
@@ -34,6 +34,7 @@
   var main=function main(){
     setupHTML();
     globalThis.Data=setupData();
+    window.setInterval(updateHTML,50);
   }
   main();
 }).call(this);
