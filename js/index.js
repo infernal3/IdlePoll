@@ -25,13 +25,19 @@
     div2.id="choices";
     div1.innerHTML=`Idle Poll, Round #<span id="round">[Error]</span>.<br>You have <span id="points">[Error]</span> Points.<br>Options:<br>[O1] +100 Points<br>[O2] x10 Points`;
     app.append(div1);
-    var click1=document.createElement("button");
+    var click1=document.createElement("button"),click2=document.createElement("button");
     click1.id="click1";
     click1.textContent="[O1]";
     click1.addEventListener("click",()=>{
       HandleAction("O1");
     });
+    click2.id="click2";
+    click2.textContent="[O2]";
+    click2.addEventListener("click",()=>{
+      HandleAction("O2");
+    });
     div2.append(click1);
+    div2.append(click2);
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -60,6 +66,9 @@
       case "O1":
         O1();
         break;
+      case "O2":
+        O2();
+        break;
       default:
         console.log(`Error: Action ${action} does not exist.`);
         break;
@@ -70,6 +79,9 @@
   }
   var O1=function O1(){
     Data[L.get("Points")]+=100;
+  }
+  var O2=function O2(){
+    Data[L.get("Points")]*=10;//TODO: Implement break_eternity.js to prevent numeric overflow
   }
   var main=function main(){
     setupHTML();
