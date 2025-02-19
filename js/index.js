@@ -28,7 +28,7 @@
     var click1=document.createElement("button");
     click1.id="click1";
     click1.textContent="[O1]";
-    click1.addEventListener("click",()=>{HandleAction("O1")});
+    click1.addEventListener("click",()=>{console.log("0? O1");HandleAction("O1")});
     div2.append(click1);
     div2.innerHTML+=`<div id="delay"></div>`;
     app.append(div2);
