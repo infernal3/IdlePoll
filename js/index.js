@@ -37,27 +37,14 @@
     div1.id="idleData";
     div2.id="choices";
     div1.innerHTML=`
-    Idle Poll, Round #<span id="round">1</span>.
-    You have <span id="points">10</span> Points.<br>
-    Options:
-    <span id="O1">[O1] +<span id="O1Effect">100</span> Points</span>
-    <span id="O2">[O2] x<span id="O2Effect">10</span> Points</span><br>
-    Upgrades:
+    Idle Poll, Round #<span id="round">1</span>.<br>
+    You have <span id="points">10</span> Points.<br><br>Options:<br>
+    <span id="O1">[O1] +<span id="O1Effect">100</span> Points</span><br>
+    <span id="O2">[O2] x<span id="O2Effect">10</span> Points</span><br><br>Upgrades:<br>
     <span id="U1">[U1] Multiply O2's effect by x<span id="U1Effect">1000</span>.</span><br>`;
     app.append(div1);
-    var click1=document.createElement("button"),click2=document.createElement("button");
-    click1.id="click1";
-    click1.textContent="[O1]";
-    click1.addEventListener("click",()=>{
-      HandleAction("O1");
-    });
-    click2.id="click2";
-    click2.textContent="[O2]";
-    click2.addEventListener("click",()=>{
-      HandleAction("O2");
-    });
-    div2.append(click1);
-    div2.append(click2);
+    div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
+    div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
     div2.append(createButton("click11","U1",()=>{HandleAction("U1");}));
     div3.id="delay";
     div2.append(div3);
@@ -77,33 +64,40 @@
     // Creates a DATA object to hold all data.
     
     // TODO: Implement Local Storage
-    var Data={},obj1=[void 0,100,10];
+    var Data={},obj1=[void 0,100,10],obj2=[void 0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
+    Data[L.get("Upgrade")]=obj2;
     Data[L.get("Points")]=10;
     Data[L.get("Round")]=1;
     Data[L.get("Last")]=Date.now()-60000;
     return Data;
   }
   var HandleAction=function HandleAction(action){
+    // Handles actions.
+    // All actions have a base property, that is, they advance the round and have delay.
     if(Date.now()-Data[L.get("Last")]<60000){
       el("delay").textContent=randomDelayMsg();
       console.log(`Action "${action}" prevented due to 1 minute action cooldown.`);
       return;
     }
+    var invalid=void 0;
     switch(action){
       case "O1":
-        O1();
+        invalid=O1();
         break;
       case "O2":
-        O2();
+        invalid=O2();
         break;
       case "U1":
-        U1();
+        invalid=U1();
         break;
       default:
         console.log(`Error: Action ${action} does not exist.`);
         break;
+    }
+    if(invalid!=void 0){
+      el("delay").textContent=invalid;
     }
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
@@ -116,7 +110,10 @@
     Data[L.get("Points")]*=globalThis.Data[L.get("Option")][2];//TODO: Implement break_eternity.js to prevent numeric overflow
   }
   var U1=function U1(){
-    console.log("not implemented");
+    if(Data[L.get("Upgrade")][1]!==0)return "U1 already bought";
+    if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
+    Data[L.get("Points")]-=1000;
+    Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
   }
   var main=function main(){
     setupHTML();
