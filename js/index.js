@@ -25,7 +25,7 @@
     var temp=document.createElement("button");
     temp.id=id;
     temp.textContent=`[${name}]`;
-    temp.addEventListener("click",new Function(`HandleAction("${name}")`));
+    temp.addEventListener("click",eval(`HandleAction("${name}")`));
     return temp;
   }
   var setupHTML=function setupHTML(){
