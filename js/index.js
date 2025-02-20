@@ -96,7 +96,7 @@
         console.log(`Error: Action ${action} does not exist.`);
         break;
     }
-    if(invalid!=void 0){
+    if(invalid!==(void 0)){
       el("delay").textContent=invalid;
     }
     Data[L.get("Round")]+=1;
@@ -113,6 +113,7 @@
     if(Data[L.get("Upgrade")][1]!==0)return "U1 already bought";
     if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
     Data[L.get("Points")]-=1000;
+    Data[L.get("Upgrade")][1]++;
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
   }
   var main=function main(){
