@@ -1,8 +1,20 @@
-* {
-  color: #222222;
+body {
+  margin: 8px;
+  padding: 0px;
+  border: 0px;
 }
 
-.highlight {
+* {
+  color: #222222;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+.shown {
   color: blue;
   font-weight: bold;
+}
+
+.aside {
+  position: absolute;
+  left: 40%;
 }
