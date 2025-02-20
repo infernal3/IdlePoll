@@ -4,7 +4,7 @@
   // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
-  var debugMode=false;
+  var debugMode=true;
   //
   //
   //
@@ -74,7 +74,12 @@
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
     if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
-    // TODO: Implement Local Storage
+    if(localStorage&&localStorage.getItem("idlePollSave")){
+      if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
+      return JSON.parse(atob(localStorage.getItem("idlePollSave")));
+    }
+    // Save does not exist
+    if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
     var Data={},obj1=[void 0,100,10],obj2=[void 0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
@@ -84,6 +89,41 @@
     Data[L.get("Last")]=Date.now()-60000;
     return Data;
   }
+  var save=function save(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call save();");
+    if(!Data){
+      throw new Error("[IdlePoll] Attempted to save without a save object.");
+    }
+    localStorage.setItem("idlePollSave",btoa(JSON.stringify(Data)));
+    if(debugMode)console.log("[IdlePoll:Debug] Save complete.");
+  }
+  var Export=async function Export(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call export();");
+    save();
+    try {
+      await navigator.clipboard.writeText(localStorage.getItem("idlePollSave"));
+      if(debugMode)console.log("[IdlePoll:Debug] Exported save.");
+    } catch (error) {
+      console.error("[IdlePoll] "+error.message);
+    }
+  }
+  var Import=function Import(data){
+    if(debugMode)console.log(`[IdlePoll:Debug] function call import(${data});`);
+    if(!JSON.parse(atob(data))){
+      console.error("[IdlePoll] Malformed import data.");
+      return;
+    }
+    if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
+    Data=JSON.parse(atob(data));
+  }
+  var HardReset=function HardReset(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call hardReset;");
+    if(localStorage.getItem("idlePollData")){
+      localStorage.removeItem("idlePollData");
+    }
+    location.reload();
+  }
+
   var HandleAction=function HandleAction(action){
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
@@ -114,6 +154,7 @@
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
     el("delay").textContent="";
+    save();
   }
   var O1=function O1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O1();");
@@ -136,6 +177,9 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
     setupHTML();
     globalThis.Data=setupData();
+    globalThis.Import=Import;
+    globalThis.Export=Export;
+    globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
   }
   if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
