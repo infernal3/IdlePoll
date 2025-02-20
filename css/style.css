@@ -13,3 +13,7 @@ body {
   color: blue;
   font-weight: bold;
 }
+
+.aside {
+  left: 40%;
+}
