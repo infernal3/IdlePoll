@@ -48,11 +48,11 @@
     div1.id="idleData";
     div2.id="choices";
     div1.innerHTML=`
-    Idle Poll, Round #<span id="round">1</span>.<br>
-    You have <span id="points">10</span> Points.<br><br>Options:<br>
-    <span id="O1">[O1] +<span id="O1Effect">100</span> Points</span><br>
-    <span id="O2">[O2] x<span id="O2Effect">10</span> Points</span><br><br>Upgrades:<br>
-    <span id="U1">[U1] Multiply O2's effect by x<span id="U1Effect">1000</span>.</span><br>`;
+    Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round">1</span>.<br>
+    You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
+    <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span><br>
+    <span id="O2"><span class="shown">[O2]</span>&nbsp;x<span id="O2Effect">10</span>&nbsp;Points</span><br><br>Upgrades:<br>
+    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><br>`;
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
