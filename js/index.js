@@ -1,4 +1,13 @@
 (function(){
+  // IdlePoll
+  // Copyright © infernal3 2025
+  // Usage rights of this file are in the attached LICENSE.
+  // 
+  // Debug Mode
+  var debugMode=false;
+  //
+  //
+  //
   var el=E=>document.getElementById(E);
   var DelayMsg=["You can only take one action every 1 minute.",
                 "Actions are delayed for up to 1 minute.",
@@ -18,10 +27,11 @@
     return void 0;
   }
   // Data point obfuscation! No idea why I did this, it just exists.
-  // Yes, it's confusing. Who cares?
+  // Yes, it's confusing. That is LITERALLY THE POINT.
   var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
   
   var createButton=function createButton(id,name,func){
+    if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
     var temp=document.createElement("button");
     temp.id=id;
     temp.textContent=`[${name}]`;
@@ -32,6 +42,7 @@
     // This function is called once, when the page is being set up.
     // Requires DOM content to be loaded.
     // Creates and sets up the HTML page.
+    if(debugMode)console.log("[IdlePoll:Debug] function call setupHTML();");
     var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
     app.id="app";
     div1.id="idleData";
@@ -62,7 +73,7 @@
   var setupData=function setupData(){
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
-    
+    if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
     // TODO: Implement Local Storage
     var Data={},obj1=[void 0,100,10],obj2=[void 0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
@@ -76,9 +87,10 @@
   var HandleAction=function HandleAction(action){
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
+    if(debugMode)console.log(`[IdlePoll:Debug] function call HandleAction(${action});`);
     if(Date.now()-Data[L.get("Last")]<60000){
       el("delay").textContent=randomDelayMsg();
-      console.log(`Action "${action}" prevented due to 1 minute action cooldown.`);
+      console.log(`[IdlePoll] Action "${action}" was prevented.`);
       return;
     }
     var invalid=void 0;
@@ -93,7 +105,7 @@
         invalid=U1();
         break;
       default:
-        console.log(`Error: Action ${action} does not exist.`);
+        console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
     }
     if(invalid!==(void 0)){
@@ -104,12 +116,15 @@
     el("delay").textContent="";
   }
   var O1=function O1(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call O1();");
     Data[L.get("Points")]+=globalThis.Data[L.get("Option")][1];
   }
   var O2=function O2(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call O2();");
     Data[L.get("Points")]*=globalThis.Data[L.get("Option")][2];//TODO: Implement break_eternity.js to prevent numeric overflow
   }
   var U1=function U1(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][1]!==0)return "U1 already bought";
     if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
     Data[L.get("Points")]-=1000;
@@ -117,9 +132,11 @@
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
   }
   var main=function main(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call main();");
     setupHTML();
     globalThis.Data=setupData();
     window.setInterval(updateHTML,50);
   }
+  if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
   main();
 }).call(this);
