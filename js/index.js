@@ -76,7 +76,7 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
-      return JSON.parse(localStorage.getItem("idlePollSave"));
+      return JSON.parse(atob(localStorage.getItem("idlePollSave")));
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
@@ -94,9 +94,36 @@
     if(!Data){
       throw new Error("[IdlePoll] Attempted to save without a save object.");
     }
-    localStorage.setItem("idlePollSave",JSON.stringify(Data));
+    localStorage.setItem("idlePollSave",btoa(JSON.stringify(Data)));
     if(debugMode)console.log("[IdlePoll:Debug] Save complete.");
   }
+  var Export=async function Export(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call export();");
+    save();
+    try {
+      await navigator.clipboard.writeText(localStorage.getItem("idlePollSave"));
+      if(debugMode)console.log("[IdlePoll:Debug] Exported save.");
+    } catch (error) {
+      console.error("[IdlePoll] "+error.message);
+    }
+  }
+  var Import=function Import(data){
+    if(debugMode)console.log(`[IdlePoll:Debug] function call import(${data});`);
+    if(!JSON.parse(atob(data))){
+      console.error("[IdlePoll] Malformed import data.");
+      return;
+    }
+    if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
+    Data=JSON.parse(atob(data));
+  }
+  var HardReset=function HardReset(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call hardReset;");
+    if(localStorage.getItem("idlePollData")){
+      localStorage.removeItem("idlePollData");
+    }
+    location.reload();
+  }
+
   var HandleAction=function HandleAction(action){
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
@@ -150,6 +177,9 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
     setupHTML();
     globalThis.Data=setupData();
+    globalThis.Import=Import;
+    globalThis.Export=Export;
+    globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
   }
   if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
