@@ -17,13 +17,13 @@
     if(typeof(x)!=='number'||!isFinite(x)||x<0)return 0;
     return void 0;
   }
-  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["U",".VXBncmF"],["O",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
+  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
   var setupHTML=function setupHTML(){
     var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
-    div1.innerHTML=`Idle Poll, Round #<span id="round">[Error]</span>.<br>You have <span id="points">[Error]</span> Points.<br>Options:<br>[O1] +100 Points<br>[O2] x10 Points`;
+    div1.innerHTML=`Idle Poll, Round #<span id="round">[Error]</span>.<br>You have <span id="points">[Error]</span> Points.<br><br>Options:<br><span id="O1">[O1] +<span id="O1Effect">100</span> Points</span><br><span id="O2">[O2] x<span id="O2Effect">10</span> Points</span>`;
     app.append(div1);
     var click1=document.createElement("button"),click2=document.createElement("button");
     click1.id="click1";
@@ -46,11 +46,14 @@
   var updateHTML=function updateHTML(){
     el("round").textContent=globalThis.Data[L.get("Round")];
     el("points").textContent=globalThis.Data[L.get("Points")];
+    el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
+    el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
   }
   var setupData=function setupData(){
     //TODO: Implement Local Storage
-    var Data={};
+    var Data={},obj1=[void 0,100,10];
     L.forEach((v,k)=>{Data[v]=undefined;});
+    Data[L.get("Option")]=obj1;
     Data[L.get("Points")]=10;
     Data[L.get("Round")]=1;
     Data[L.get("Last")]=Date.now()-60000;
@@ -78,10 +81,10 @@
     el("delay").textContent="";
   }
   var O1=function O1(){
-    Data[L.get("Points")]+=100;
+    Data[L.get("Points")]+=globalThis.Data[L.get("Option")][1];
   }
   var O2=function O2(){
-    Data[L.get("Points")]*=10;//TODO: Implement break_eternity.js to prevent numeric overflow
+    Data[L.get("Points")]*=globalThis.Data[L.get("Option")][2];//TODO: Implement break_eternity.js to prevent numeric overflow
   }
   var main=function main(){
     setupHTML();
