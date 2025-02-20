@@ -4,7 +4,7 @@
   // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
-  var debugMode=true;
+  var debugMode=false;
   //
   //
   //
@@ -52,7 +52,7 @@
     You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span><br>
     <span id="O2"><span class="shown">[O2]</span>&nbsp;x<span id="O2Effect">10</span>&nbsp;Points</span><br><br>Upgrades:<br>
-    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><br>`;
+    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>`;
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
@@ -127,6 +127,7 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][1]!==0)return "U1 already bought";
     if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
+    el("U1-extra").textContent="BOUGHT";
     Data[L.get("Points")]-=1000;
     Data[L.get("Upgrade")][1]++;
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
