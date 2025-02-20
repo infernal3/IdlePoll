@@ -15,5 +15,6 @@ body {
 }
 
 .aside {
+  position: absolute;
   left: 40%;
 }
