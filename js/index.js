@@ -21,11 +21,11 @@
   // Yes, it's confusing. Who cares?
   var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
   
-  var createButton=function createButton(id,name){
+  var createButton=function createButton(id,name,func){
     var temp=document.createElement("button");
     temp.id=id;
     temp.textContent=`[${name}]`;
-    temp.addEventListener("click",eval(`HandleAction("${name}")`));
+    temp.addEventListener("click",func);
     return temp;
   }
   var setupHTML=function setupHTML(){
@@ -58,7 +58,7 @@
     });
     div2.append(click1);
     div2.append(click2);
-    div2.append(createButton("click11","U1"));
+    div2.append(createButton("click11","U1",()=>{HandleAction("U1");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
