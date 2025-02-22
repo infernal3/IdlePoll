@@ -52,11 +52,13 @@
     You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span><br>
     <span id="O2"><span class="shown">[O2]</span>&nbsp;x<span id="O2Effect">10</span>&nbsp;Points</span><br><br>Upgrades:<br>
-    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>`;
+    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
+    <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>`;
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
     div2.append(createButton("click11","U1",()=>{HandleAction("U1");}));
+    div2.append(createButton("click12","U2",()=>{HandleAction("U2");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -80,7 +82,7 @@
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-    var Data={},obj1=[void 0,100,10],obj2=[void 0,0];
+    var Data={},obj1=[void 0,100,10],obj2=[void 0,0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
     Data[L.get("Upgrade")]=obj2;
@@ -144,12 +146,16 @@
       case "U1":
         invalid=U1();
         break;
+      case "U2":
+        invalid=U2();
+        break;
       default:
         console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
     }
-    if(invalid!==(void 0)){
+    if(invalid){
       el("delay").textContent=invalid;
+      return;
     }
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
@@ -172,6 +178,14 @@
     Data[L.get("Points")]-=1000;
     Data[L.get("Upgrade")][1]++;
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
+  }
+  var U2=function U2(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
+    if(Data[L.get("Upgrade")][2]!==0)return "U1 already bought";
+    if(Data[L.get("Points")]<1e10)return "Insufficient Points: Need 1e10";
+    el("U2-extra").textContent="BOUGHT";
+    Data[L.get("Points")]-=1e10;
+    Data[L.get("Upgrade")][2]=1;
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
