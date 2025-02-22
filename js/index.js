@@ -204,9 +204,9 @@
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")]<1e10)return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
-    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
     Data[L.get("Points")]-=1e10;
     Data[L.get("Upgrade")][2]=1;
+    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
