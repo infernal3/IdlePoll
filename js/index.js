@@ -131,11 +131,11 @@
     Data=JSON.parse(atob(data));
   }
   var HardReset=function HardReset(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call hardReset;");
+    if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
     if(localStorage.getItem("idlePollData")){
       localStorage.removeItem("idlePollData");
     }
-    location.reload();
+    window.setTimeout(100,()=>{location.reload();});
   }
 
   var HandleAction=function HandleAction(action){
