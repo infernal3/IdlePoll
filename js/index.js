@@ -135,7 +135,7 @@
     if(localStorage.getItem("idlePollData")){
       localStorage.removeItem("idlePollData");
     }
-    window.setTimeout(100,()=>{location.reload();});
+    window.setTimeout(()=>{location.reload();},150);
   }
 
   var HandleAction=function HandleAction(action){
