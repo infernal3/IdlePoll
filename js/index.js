@@ -63,6 +63,12 @@
     div2.append(div3);
     app.append(div2);
     document.body.append(app);
+    
+  }
+  var setupVariableHTML=function setupVariableHTML(){
+    // This function is called once, when the page is being set up.
+    // Requires a DATA object to be loaded.
+    // Modifies some aspects of the page that are data-sensitive.
     if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
     if(Data[L.get("Upgrade")][2])el("U2-extra").textContent="BOUGHT";
   }
@@ -193,6 +199,7 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
     setupHTML();
     globalThis.Data=setupData();
+    setupVariableHTML();
     globalThis.Import=Import;
     globalThis.Export=Export;
     globalThis.HardReset=HardReset;
