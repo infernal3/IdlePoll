@@ -63,6 +63,8 @@
     div2.append(div3);
     app.append(div2);
     document.body.append(app);
+    if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
+    if(Data[L.get("Upgrade")][2])el("U2-extra").textContent="BOUGHT";
   }
   var updateHTML=function updateHTML(){
     // This function is called very often.
@@ -172,16 +174,16 @@
   }
   var U1=function U1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
-    if(Data[L.get("Upgrade")][1]!==0)return "U1 already bought";
+    if(Data[L.get("Upgrade")][1])return "U1 already bought";
     if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
     el("U1-extra").textContent="BOUGHT";
     Data[L.get("Points")]-=1000;
-    Data[L.get("Upgrade")][1]++;
+    Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
   }
   var U2=function U2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
-    if(Data[L.get("Upgrade")][2]!==0)return "U1 already bought";
+    if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")]<1e10)return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
     Data[L.get("Points")]-=1e10;
