@@ -4,7 +4,7 @@
   // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
-  var debugMode=true;
+  var debugMode=false;
   //
   //
   //
