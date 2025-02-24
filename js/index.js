@@ -135,8 +135,8 @@
   }
   var HardReset=function HardReset(){
     if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
-    if(localStorage.getItem("idlePollData")){
-      localStorage.removeItem("idlePollData");
+    if(localStorage.getItem("idlePollSave")){
+      localStorage.removeItem("idlePollSave");
     }
     window.setTimeout(()=>{location.reload();},150);
   }
