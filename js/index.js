@@ -4,7 +4,7 @@
   // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
-  var debugMode=false;
+  var debugMode=true;
   //
   //
   //
@@ -90,7 +90,10 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
-      return JSON.parse(atob(localStorage.getItem("idlePollSave")));
+      var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
+      Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
+      return Data;
+      // Parse Decimals
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
@@ -98,7 +101,7 @@
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
     Data[L.get("Upgrade")]=obj2;
-    Data[L.get("Points")]=10;
+    Data[L.get("Points")]=new Decimal(10);
     Data[L.get("Round")]=1;
     Data[L.get("Last")]=Date.now()-60000;
     return Data;
@@ -132,8 +135,8 @@
   }
   var HardReset=function HardReset(){
     if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
-    if(localStorage.getItem("idlePollData")){
-      localStorage.removeItem("idlePollData");
+    if(localStorage.getItem("idlePollSave")){
+      localStorage.removeItem("idlePollSave");
     }
     window.setTimeout(()=>{location.reload();},150);
   }
@@ -179,34 +182,34 @@
   }
   var O1=function O1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O1();");
-    Data[L.get("Points")]+=globalThis.Data[L.get("Option")][1];
+    Data[L.get("Points")]=Data[L.get("Points")].add(globalThis.Data[L.get("Option")][1]);
   }
   var O2=function O2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O2();");
-    Data[L.get("Points")]*=globalThis.Data[L.get("Option")][2];//TODO: Implement break_eternity.js to prevent numeric overflow
+    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]);
   }
   var O3=function O3(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O3();");
     if(!Data[L.get("Upgrade")][2])return "LOCKED: Purchase U2 to unlock";
-    Data[L.get("Points")]=Math.pow(Data[L.get("Points")],1.5);
+    Data[L.get("Points")]=Data[L.get("Points")].pow(1.5);
   }
   var U1=function U1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][1])return "U1 already bought";
-    if(Data[L.get("Points")]<1000)return "Insufficient Points: Need 1000";
+    if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
     el("U1-extra").textContent="BOUGHT";
-    Data[L.get("Points")]-=1000;
+    Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
     Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
     Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
   }
   var U2=function U2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
-    if(Data[L.get("Points")]<1e10)return "Insufficient Points: Need 1e10";
+    if(Data[L.get("Points")].lt(1e10))return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
-    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
-    Data[L.get("Points")]-=1e10;
+    Data[L.get("Points")]=Data[L.get("Points")].sub(1e10);
     Data[L.get("Upgrade")][2]=1;
+    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");

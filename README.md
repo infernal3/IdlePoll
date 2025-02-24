@@ -26,4 +26,14 @@ Scaling and Softcaps:
 Points gain will softcap after 1e1000000 Points.
 ```
 
-Now the Idle Poll is moving on the web!
+Each option in **Options** and each upgrade in **Upgrades** counts as an **action**.
+Actions advance the round counter and modify the idle.
+
+In its original format, the poll would be posted between different actions and the winning action would be chosen.
+Now in a singleplayer form, the player can have sole jurisdiction over which action to choose.
+
+The possibilities are many.
+
+
+Library used:
+break_infinity.js ([https://github.com/Patashu/break_infinity.js](https://github.com/Patashu/break_infinity.js))
