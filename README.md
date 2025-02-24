@@ -33,3 +33,7 @@ In its original format, the poll would be posted between different actions and t
 Now in a singleplayer form, the player can have sole jurisdiction over which action to choose.
 
 The possibilities are many.
+
+
+Library used:
+break_infinity.js ([https://github.com/Patashu/break_infinity.js](https://github.com/Patashu/break_infinity.js))
