@@ -95,7 +95,8 @@
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
       var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
-      Data[L.get("Points")]=Number.isFinite(Data[L.get("Points")])?new Decimal(Data[L.get("Points")]):new Decimal(Number.MAX_VALUE);
+      Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
+      if(Data[L.get("Points")].toString()=="Infinity")Data[L.get("Points")]=new Decimal(Number.MAX_VALUE);
       return Data;
       // Parse Decimals
     }
