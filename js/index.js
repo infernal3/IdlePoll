@@ -48,6 +48,7 @@
     div1.id="idleData";
     div2.id="choices";
     div1.innerHTML=`
+    <div id="div11"></div>
     Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round">1</span>.<br>
     You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span><br>
@@ -56,6 +57,9 @@
     <br>Upgrades:<br>
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>`;
+    div11.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
+    div11.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
+    div11.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
@@ -91,7 +95,7 @@
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
       var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
-      Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
+      Data[L.get("Points")]=Number.isFinite(Data[L.get("Points")])?new Decimal(Data[L.get("Points")]):new Decimal(Number.MAX_VALUE);
       return Data;
       // Parse Decimals
     }
@@ -132,6 +136,11 @@
     }
     if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
     Data=JSON.parse(atob(data));
+  }
+  var ImportClipboard=async function ImportClipboard(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call importClipboard();");
+    var clipTxt=await navigator.clipboard.readText();
+    Import(clipTxt);
   }
   var HardReset=function HardReset(){
     if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
