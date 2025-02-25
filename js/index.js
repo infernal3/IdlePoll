@@ -43,7 +43,7 @@
     // Requires DOM content to be loaded.
     // Creates and sets up the HTML page.
     if(debugMode)console.log("[IdlePoll:Debug] function call setupHTML();");
-    var app=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
+    var app=document.createElement("div"),div0=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
     app.id="app";
     div1.id="idleData";
     div2.id="choices";
@@ -56,6 +56,10 @@
     <br>Upgrades:<br>
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>`;
+    div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
+    div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
+    div0.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
+    app.append(div0);
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
@@ -92,6 +96,7 @@
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
       var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
       Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
+      if(Data[L.get("Points")].toString()=="Infinity")Data[L.get("Points")]=new Decimal(Number.MAX_VALUE);
       return Data;
       // Parse Decimals
     }
@@ -132,6 +137,11 @@
     }
     if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
     Data=JSON.parse(atob(data));
+  }
+  var ImportClipboard=async function ImportClipboard(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call importClipboard();");
+    var clipTxt=await navigator.clipboard.readText();
+    Import(clipTxt);
   }
   var HardReset=function HardReset(){
     if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
