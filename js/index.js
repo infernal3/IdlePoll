@@ -57,9 +57,9 @@
     <br>Upgrades:<br>
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>`;
-    div11.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
-    div11.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
-    div11.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
+    el('div11').append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
+    el('div11').append(createButton("click_export","Export to Clipboard",()=>{Export();}));
+    el('div11').append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
     div2.append(createButton("click2","O2",()=>{HandleAction("O2");}));
