@@ -14,7 +14,16 @@ body {
   font-weight: bold;
 }
 
-.aside {
-  position: absolute;
-  left: 40%;
+
+@media (min-width: 1000) {
+  .aside {
+    position: absolute;
+    left: 40%;
+  }
+}
+@media(max-width: 1000) {
+  .aside {
+    position: absolute;
+    right: 0;
+  }
 }
