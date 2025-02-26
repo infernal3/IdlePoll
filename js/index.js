@@ -82,7 +82,7 @@
     if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
     if(Data[L.get("Upgrade")][2])el("U2-extra").textContent="BOUGHT";
     if(Data[L.get("Upgrade")][3])el("U3-extra").textContent="BOUGHT";
-    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
+    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
   var updateHTML=function updateHTML(){
     // This function is called very often.
@@ -212,12 +212,23 @@
   }
   var U1=function U1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
-    if(Data[L.get("Upgrade")][1])return "U1 already bought";
-    if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
-    el("U1-extra").textContent="BOUGHT";
-    Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
-    Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
-    Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
+    if(Data[L.get("Upgrade")][3]){
+      // We have U3. U1 is now rebuyable.
+      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);// TODO: add U1 softcap
+      if(Data[L.get("Points")].lt(pointsNeeded))return `Insufficient Points: Need ${pointsNeeded}`;
+      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;//TODO: add bulk buy
+      Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
+      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
+      Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
+      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
+    } else {
+      if(Data[L.get("Upgrade")][1])return "U1 already bought";
+      if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
+      el("U1-extra").textContent="BOUGHT";
+      Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
+      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
+      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
+    }
   }
   var U2=function U2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
