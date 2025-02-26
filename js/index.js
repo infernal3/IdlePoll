@@ -81,7 +81,7 @@
     // Modifies some aspects of the page that are data-sensitive.
     if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
     if(Data[L.get("Upgrade")][2]){
-      el("U2").childNodes[1].textContent="O3 is unlocked";
+      el("U2").childNodes[1].textContent=" O3 is unlocked";
       el("U2-extra").textContent="BOUGHT";
     }
     if(Data[L.get("Upgrade")][3]){
@@ -241,7 +241,7 @@
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")].lt(1e10))return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
-    el("U2").childNodes[1].textContent="O3 is unlocked";
+    el("U2").childNodes[1].textContent=" O3 is unlocked";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e10);
     Data[L.get("Upgrade")][2]=1;
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
