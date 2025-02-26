@@ -15,15 +15,15 @@ body {
 }
 
 
-@media (min-width: 1000) {
+@media(width>1000px) {
   .aside {
     position: absolute;
     left: 40%;
   }
 }
-@media(max-width: 1000) {
+@media(width<=1000px) {
   .aside {
     position: absolute;
-    right: 0;
+    right: 0px;
   }
 }
