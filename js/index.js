@@ -24,7 +24,7 @@
   }
   var U1Scaling=function U1Scaling(x){
     if(typeof(x)!=='number'||!isFinite(x)||x<0)return 0;
-    return void 0;
+    return void 0;//TODO: make this
   }
   // Data point obfuscation! No idea why I did this, it just exists.
   // Yes, it's confusing. That is LITERALLY THE POINT.
@@ -98,6 +98,16 @@
     el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
     el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
   }
+  var parseDecimalData=function parseDecimalData(D,string,index){
+    if(index){
+      D[L.get(string)][index]=new Decimal(D[L.get(string)][index]);
+      if(D[L.get(string)][index].toString()=="Infinity")D[L.get(string)][index]=new Decimal(Number.MAX_VALUE);
+      return D;
+    }
+    D[L.get(string)]=new Decimal(D[L.get(string)]);
+    if(D[L.get(string)].toString()=="Infinity")D[L.get(string)]=new Decimal(Number.MAX_VALUE);
+    return D;
+  }
   var setupData=function setupData(){
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
@@ -105,14 +115,15 @@
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
       var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
-      Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
-      if(Data[L.get("Points")].toString()=="Infinity")Data[L.get("Points")]=new Decimal(Number.MAX_VALUE);
-      return Data;
       // Parse Decimals
+      Data=parseDecimalData(Data,"Points");
+      Data=parseDecimalData(Data,"Option",1);
+      Data=parseDecimalData(Data,"Option",2);
+      return Data;
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-    var Data={},obj1=[void 0,100,10,void 0],obj2=[void 0,0,0,0];
+    var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
     Data[L.get("Upgrade")]=obj2;
