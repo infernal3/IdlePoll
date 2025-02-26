@@ -24,7 +24,7 @@
   }
   var U1Scaling=function U1Scaling(x){
     if(typeof(x)!=='number'||!isFinite(x)||x<0)return 0;
-    return void 0;
+    return void 0;//TODO: make this
   }
   // Data point obfuscation! No idea why I did this, it just exists.
   // Yes, it's confusing. That is LITERALLY THE POINT.
@@ -55,7 +55,9 @@
     <span id="O3"><span class="shown">[O3]</span>&nbsp;^1.5&nbsp;Points</span><br>
     <br>Upgrades:<br>
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
-    <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>`;
+    <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>
+    <span id="U3"><span class="shown">[U3]</span>&nbsp;U1&nbsp;is&nbsp;rebuyable&nbsp;and&nbsp;now&nbsp;also&nbsp;boosts&nbsp;O1.</span><span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
+    `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
     div0.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
@@ -66,6 +68,7 @@
     div2.append(createButton("click3","O3",()=>{HandleAction("O3");}));
     div2.append(createButton("click11","U1",()=>{HandleAction("U1");}));
     div2.append(createButton("click12","U2",()=>{HandleAction("U2");}));
+    div2.append(createButton("click13","U3",()=>{HandleAction("U3");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -77,8 +80,15 @@
     // Requires a DATA object to be loaded.
     // Modifies some aspects of the page that are data-sensitive.
     if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
-    if(Data[L.get("Upgrade")][2])el("U2-extra").textContent="BOUGHT";
-    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
+    if(Data[L.get("Upgrade")][2]){
+      el("U2").childNodes[1].innerHTML="&nbsp;O3&nbsp;is&nbsp;unlocked.";
+      el("U2-extra").textContent="BOUGHT";
+    }
+    if(Data[L.get("Upgrade")][3]){
+      el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
+      el("U3-extra").textContent="BOUGHT";
+    }
+    el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
   var updateHTML=function updateHTML(){
     // This function is called very often.
@@ -88,6 +98,16 @@
     el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
     el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
   }
+  var parseDecimalData=function parseDecimalData(D,string,index){
+    if(index){
+      D[L.get(string)][index]=new Decimal(D[L.get(string)][index]);
+      if(D[L.get(string)][index].toString()=="Infinity")D[L.get(string)][index]=new Decimal(Number.MAX_VALUE);
+      return D;
+    }
+    D[L.get(string)]=new Decimal(D[L.get(string)]);
+    if(D[L.get(string)].toString()=="Infinity")D[L.get(string)]=new Decimal(Number.MAX_VALUE);
+    return D;
+  }
   var setupData=function setupData(){
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
@@ -95,14 +115,15 @@
     if(localStorage&&localStorage.getItem("idlePollSave")){
       if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
       var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
-      Data[L.get("Points")]=new Decimal(Data[L.get("Points")]);
-      if(Data[L.get("Points")].toString()=="Infinity")Data[L.get("Points")]=new Decimal(Number.MAX_VALUE);
-      return Data;
       // Parse Decimals
+      Data=parseDecimalData(Data,"Points");
+      Data=parseDecimalData(Data,"Option",1);
+      Data=parseDecimalData(Data,"Option",2);
+      return Data;
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-    var Data={},obj1=[void 0,100,10,void 0],obj2=[void 0,0,0];
+    var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
     Data[L.get("Upgrade")]=obj2;
@@ -177,6 +198,9 @@
       case "O3":
         invalid=O3();
         break;
+      case "U3":
+        invalid=U3();
+        break;
       default:
         console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
@@ -205,21 +229,43 @@
   }
   var U1=function U1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
-    if(Data[L.get("Upgrade")][1])return "U1 already bought";
-    if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
-    el("U1-extra").textContent="BOUGHT";
-    Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
-    Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
-    Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1])
+    if(Data[L.get("Upgrade")][3]){
+      // We have U3. U1 is now rebuyable.
+      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);// TODO: add U1 scaling
+      if(Data[L.get("Upgrade")][1].gte(10))return "Uncaught Error: U1Scaling is not defined";
+      if(Data[L.get("Points")].lt(pointsNeeded))return `Insufficient Points: Need ${pointsNeeded}`;
+      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;//TODO: add bulk buy
+      Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
+      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
+      Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
+      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1]);
+    } else {
+      if(Data[L.get("Upgrade")][1])return "U1 already bought";
+      if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
+      el("U1-extra").textContent="BOUGHT";
+      Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
+      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
+      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1]);
+    }
   }
   var U2=function U2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")].lt(1e10))return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
+    el("U2").childNodes[1].innerHTML="&nbsp;O3&nbsp;is&nbsp;unlocked.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e10);
     Data[L.get("Upgrade")][2]=1;
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
+  }
+  var U3=function U3(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call U3();");
+    if(Data[L.get("Upgrade")][3])return "U3 already bought";
+    if(Data[L.get("Points")].lt(1e50))return "Insufficient Points: Need 1e50";
+    el("U3-extra").textContent="BOUGHT";
+    el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
+    Data[L.get("Points")]=Data[L.get("Points")].sub(1e50);
+    Data[L.get("Upgrade")][3]=1;
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
