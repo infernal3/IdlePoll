@@ -57,7 +57,7 @@
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>
     <span id="U3"><span class="shown">[U3]</span>&nbsp;U1&nbsp;is&nbsp;rebuyable&nbsp;and&nbsp;now&nbsp;also&nbsp;boosts&nbsp;O1.</span><span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
-    <span id="U4"><span class="shown">[U4]</span>&nbsp;Raise&nbsp;O1&nbsp;and&nbsp;O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.</span><span id="U4-extra" class="aside">Cost: 1e100 Points</span><br>
+    <span id="U4"><span class="shown">[U4]</span>&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.</span><span id="U4-extra" class="aside">Cost: 1e100 Points</span><br>
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
@@ -91,6 +91,7 @@
       el("U3-extra").textContent="BOUGHT";
     }
     if(Data[L.get("Upgrade")][4]){
+      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
       el("U4-extra").textContent="BOUGHT";
     }
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
@@ -280,6 +281,7 @@
     if(Data[L.get("Upgrade")][4])return "U4 already bought";
     if(Data[L.get("Points")].lt(1e100))return "Insufficient Points: Need 1e100";
     el("U4-extra").textContent="BOUGHT";
+    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
     Data[L.get("Upgrade")][4]=1;
   }
