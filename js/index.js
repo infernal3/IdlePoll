@@ -56,7 +56,7 @@
     <br>Upgrades:<br>
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>
-    <span id="U3"><span class="shown">[U3]</span>&nbsp;Make U1 rebuyable and boost O1.</span><span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
+    <span id="U3"><span class="shown">[U3]</span>&nbsp;U1&nbsp;is&nbsp;rebuyable&nbsp;and&nbsp;now&nbsp;also&nbsp;boosts&nbsp;O1.</span><span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
@@ -81,11 +81,11 @@
     // Modifies some aspects of the page that are data-sensitive.
     if(Data[L.get("Upgrade")][1])el("U1-extra").textContent="BOUGHT";
     if(Data[L.get("Upgrade")][2]){
-      el("U2").childNodes[1].textContent=" O3 is unlocked.";
+      el("U2").childNodes[1].textContent="&nbsp;O3&nbsp;is&nbsp;unlocked.";
       el("U2-extra").textContent="BOUGHT";
     }
     if(Data[L.get("Upgrade")][3]){
-      el("U1").childNodes[1].textContent=" Multiplying O1, O2's effects by x";
+      el("U1").childNodes[1].textContent="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
     }
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
@@ -242,7 +242,7 @@
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")].lt(1e10))return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
-    el("U2").childNodes[1].textContent=" O3 is unlocked.";
+    el("U2").childNodes[1].textContent="&nbsp;O3&nbsp;is&nbsp;unlocked.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e10);
     Data[L.get("Upgrade")][2]=1;
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
@@ -252,7 +252,7 @@
     if(Data[L.get("Upgrade")][3])return "U3 already bought";
     if(Data[L.get("Points")].lt(1e50))return "Insufficient Points: Need 1e50";
     el("U3-extra").textContent="BOUGHT";
-    el("U1").childNodes[1].textContent=" Multiplying O1, O2's effects by x";
+    el("U1").childNodes[1].textContent="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e50);
     Data[L.get("Upgrade")][3]=1;
   }
