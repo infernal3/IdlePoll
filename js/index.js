@@ -57,6 +57,7 @@
     <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply&nbsp;O2's&nbsp;effect&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><span id="U1-extra" class="aside">Cost: 1000 Points</span><br>
     <span id="U2"><span class="shown">[U2]</span>&nbsp;Unlock&nbsp;O3,&nbsp;which&nbsp;raises&nbsp;Points&nbsp;to&nbsp;^1.5.</span><span id="U2-extra" class="aside">Cost: 1e10 Points</span><br>
     <span id="U3"><span class="shown">[U3]</span>&nbsp;U1&nbsp;is&nbsp;rebuyable&nbsp;and&nbsp;now&nbsp;also&nbsp;boosts&nbsp;O1.</span><span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
+    <span id="U4"><span class="shown">[U4]</span>&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.</span><span id="U4-extra" class="aside">Cost: 1e100 Points</span><br>
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
@@ -69,6 +70,7 @@
     div2.append(createButton("click11","U1",()=>{HandleAction("U1");}));
     div2.append(createButton("click12","U2",()=>{HandleAction("U2");}));
     div2.append(createButton("click13","U3",()=>{HandleAction("U3");}));
+    div2.append(createButton("click14","U4",()=>{HandleAction("U4");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -87,6 +89,10 @@
     if(Data[L.get("Upgrade")][3]){
       el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
+    }
+    if(Data[L.get("Upgrade")][4]){
+      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+      el("U4-extra").textContent="BOUGHT";
     }
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
@@ -123,7 +129,7 @@
     }
     // Save does not exist
     if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-    var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0];
+    var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0,0];
     L.forEach((v,k)=>{Data[v]=undefined;});
     Data[L.get("Option")]=obj1;
     Data[L.get("Upgrade")]=obj2;
@@ -201,6 +207,9 @@
       case "U3":
         invalid=U3();
         break;
+      case "U4":
+        invalid=U4();
+        break;
       default:
         console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
@@ -238,14 +247,14 @@
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
       Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
-      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1]);
+      Data[L.get("Option")][2]=new Decimal(10).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
     } else {
       if(Data[L.get("Upgrade")][1])return "U1 already bought";
       if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
       el("U1-extra").textContent="BOUGHT";
       Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
-      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;
-      Data[L.get("Option")][2]=10*Math.pow(1000,Data[L.get("Upgrade")][1]);
+      Data[L.get("Upgrade")][1]=new Decimal((Data[L.get("Upgrade")][1]||0)+1);
+      Data[L.get("Option")][2]=new Decimal(10*Math.pow(1000,Data[L.get("Upgrade")][1]));
     }
   }
   var U2=function U2(){
@@ -266,6 +275,15 @@
     el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e50);
     Data[L.get("Upgrade")][3]=1;
+  }
+  var U4=function U4(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call U4();");
+    if(Data[L.get("Upgrade")][4])return "U4 already bought";
+    if(Data[L.get("Points")].lt(1e100))return "Insufficient Points: Need 1e100";
+    el("U4-extra").textContent="BOUGHT";
+    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+    Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
+    Data[L.get("Upgrade")][4]=1;
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");

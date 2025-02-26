@@ -3,18 +3,46 @@ body {
   padding: 0px;
   border: 0px;
 }
+@media (prefers-color-scheme: light) {
+  * {
+    color: #222222;
+  }
+  body {
+    background: #ffffff;
+  }
+  .shown {
+    color: #0c0cff;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  * {
+    color: #cdcdcd;
+  }
+  body {
+    background: #000000;
+  }
+  .shown {
+    color: #33e6ff;
+  }
+}
 
 * {
-  color: #222222;
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
 .shown {
-  color: blue;
   font-weight: bold;
 }
 
-.aside {
-  position: absolute;
-  left: 40%;
+@media(width>1000px) {
+  .aside {
+    position: absolute;
+    left: 40%;
+  }
+}
+@media(width<=1000px) {
+  .aside {
+    position: absolute;
+    right: 0px;
+  }
 }

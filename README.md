@@ -1,8 +1,10 @@
 # Idle Poll
 
+Site is available at [https://infernal3.github.io/IdlePoll](https://infernal3.github.io/IdlePoll).
+
 This project is based on an idle poll that I've been posting for a while.
 An example of such a poll is:
-```
+```ini
 Idle poll, Round #22
 1.00e6885 Points
 
@@ -13,10 +15,10 @@ Options:
 Due to U5, O1-O3 will activate an additional time at the end of the round.
 
 Upgrades:
-[U1] Multiplying O1, O2's effects by x1e78.   | Bought x26. Next at 1e819 Points
+[U1] Multiplying O1, O2 effects by x1e78.     | Bought x26. Next at 1e819 Points
 [U2] O3 is unlocked.                          | BOUGHT
 [U3] U1 is rebuyable and now also boosts O1.  | BOUGHT
-[U4] Raising O1's effect to the round number. | BOUGHT
+[U4] Raising O1 effect to the round number.   | BOUGHT
 [U5] O1-O3 is activated every round.          | BOUGHT
 
 Unlocks:
@@ -34,6 +36,9 @@ Now in a singleplayer form, the player can have sole jurisdiction over which act
 
 The possibilities are many.
 
+
+
+## Acknowledgements
 
 Library used:
 break_infinity.js ([https://github.com/Patashu/break_infinity.js](https://github.com/Patashu/break_infinity.js))
