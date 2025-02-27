@@ -240,10 +240,11 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][3]){
       // We have U3. U1 is now rebuyable.
+      if(!Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=0;
       var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);// TODO: add U1 scaling
-      if(Data[L.get("Upgrade")][1].gte(10))return "Uncaught Error: U1Scaling is not defined";
+      if(Data[L.get("Upgrade")][1]>=10)return "Uncaught Error: U1Scaling is not defined";
       if(Data[L.get("Points")].lt(pointsNeeded))return `Insufficient Points: Need ${pointsNeeded}`;
-      Data[L.get("Upgrade")][1]=(Data[L.get("Upgrade")][1]||0)+1;//TODO: add bulk buy
+      Data[L.get("Upgrade")][1]++;//TODO: add bulk buy
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
       Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
