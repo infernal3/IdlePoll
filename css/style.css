@@ -46,3 +46,10 @@ body {
     right: 0px;
   }
 }
+.footer {
+  bottom: 0px;
+  margin-bottom: 8px;
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+}

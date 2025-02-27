@@ -81,7 +81,10 @@
     div2.append(div3);
     app.append(div2);
     document.body.append(app);
-    
+    var footer=document.createElement("div");
+    footer.className="footer";
+    footer.innerHTML=`Playing IdlePoll at <a href="https://infernal3.github.io/IdlePoll">https://infernal3.github.io/IdlePoll</a>.`
+    document.body.append(footer);
   }
   var setupVariableHTML=function setupVariableHTML(){
     // This function is called once, when the page is being set up.
