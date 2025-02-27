@@ -225,11 +225,11 @@
   }
   var O1=function O1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O1();");
-    Data[L.get("Points")]=Data[L.get("Points")].add(globalThis.Data[L.get("Option")][1]);
+    Data[L.get("Points")]=Data[L.get("Points")].add(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1));
   }
   var O2=function O2(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O2();");
-    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]);
+    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1));
   }
   var O3=function O3(){
     if(debugMode)console.log("[IdlePoll:Debug] function call O3();");
