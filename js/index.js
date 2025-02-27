@@ -254,8 +254,8 @@
       if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
       el("U1-extra").textContent="BOUGHT";
       Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
-      Data[L.get("Upgrade")][1]=new Decimal((Data[L.get("Upgrade")][1]||0)+1);
-      Data[L.get("Option")][2]=new Decimal(10*Math.pow(1000,Data[L.get("Upgrade")][1]));
+      Data[L.get("Upgrade")][1]=1;
+      Data[L.get("Option")][2]=new Decimal(10000);
     }
   }
   var U2=function U2(){
