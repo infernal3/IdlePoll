@@ -46,3 +46,14 @@ body {
     right: 0px;
   }
 }
+div.footer {
+  bottom: 0px;
+  margin-bottom: 8px;
+  position: absolute;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+}
+div.footer > a {
+  color: unset;
+}
