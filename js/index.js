@@ -112,6 +112,7 @@
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
   var updateHTML=function updateHTML(){
+    if(!globalThis.Data)window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
@@ -135,27 +136,31 @@
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
     if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
-    if(localStorage&&localStorage.getItem("idlePollSave")){
-      if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
-      var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
-      // Parse Decimals
-      Data=parseDecimalData(Data,"Points");
-      Data=parseDecimalData(Data,"Option",1);
-      Data=parseDecimalData(Data,"Option",2);
-      if(!"number"==typeof Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=Number(Data[L.get("Upgrade")][1]);
-      if(isNaN(Data[L.get("Upgrade")][1]))Data[L.get("Upgrade")][1]=0;
+    try{
+      if(localStorage&&localStorage.getItem("idlePollSave")){
+        if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
+        var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
+        // Parse Decimals
+        Data=parseDecimalData(Data,"Points");
+        Data=parseDecimalData(Data,"Option",1);
+        Data=parseDecimalData(Data,"Option",2);
+        if(!"number"==typeof Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=Number(Data[L.get("Upgrade")][1]);
+        if(isNaN(Data[L.get("Upgrade")][1]))Data[L.get("Upgrade")][1]=0;
+        return Data;
+      }
+      // Save does not exist
+      if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
+      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0,0];
+      L.forEach((v,k)=>{Data[v]=undefined;});
+      Data[L.get("Option")]=obj1;
+      Data[L.get("Upgrade")]=obj2;
+      Data[L.get("Points")]=new Decimal(10);
+      Data[L.get("Round")]=1;
+      Data[L.get("Last")]=Date.now()-60000;
       return Data;
+    } catch(err){
+      window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
     }
-    // Save does not exist
-    if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-    var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0,0];
-    L.forEach((v,k)=>{Data[v]=undefined;});
-    Data[L.get("Option")]=obj1;
-    Data[L.get("Upgrade")]=obj2;
-    Data[L.get("Points")]=new Decimal(10);
-    Data[L.get("Round")]=1;
-    Data[L.get("Last")]=Date.now()-60000;
-    return Data;
   }
   var save=function save(){
     if(debugMode)console.log("[IdlePoll:Debug] function call save();");
