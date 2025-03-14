@@ -63,7 +63,7 @@ div.footer > a {
   color: var(--accent-color2);
 }
 button{
-  user-select: false;
+  user-select: none;
   width: auto;
   height: 2em;
   border: 1px solid var(--border-color);
