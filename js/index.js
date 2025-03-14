@@ -131,7 +131,7 @@
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
-    el("points").textContent=globalThis.Data[L.get("Points")];
+    el("points").textContent=globalThis.Data[L.get("Points")]+(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?"&nbsp;(softcapped)":"");
     el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
     el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
     el("O1-extra").textContent="After U4: +"+globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]);
