@@ -63,3 +63,8 @@ div.footer > a {
 #point-softcap{
   color: red;
 }
+button{
+  width: auto;
+  height: 2em;
+  border: 1px solid black;
+}
