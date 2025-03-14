@@ -1,7 +1,9 @@
+/**
+ * IdlePoll
+ * Copyright infernal3 2025
+ * Read the attached LICENSE for usage rights.
+*/
 (function(){
-  // IdlePoll
-  // Copyright © infernal3 2025
-  // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
   var debugMode=true;
