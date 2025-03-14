@@ -28,6 +28,7 @@ body {
 * {
   color: var(--base-color);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 .shown {
   font-weight: bold;
