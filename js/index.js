@@ -64,7 +64,7 @@
     div2.id="choices";
     div1.innerHTML=`
     Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round">1</span>.<br>
-    You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
+    You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<span id="point-softcap"></span><br><br>Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span>
     <span id="O1-extra" class="aside" style="display:none;"></span><br>
     <span id="O2"><span class="shown">[O2]</span>&nbsp;x<span id="O2Effect">10</span>&nbsp;Points</span>
@@ -131,7 +131,8 @@
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
-    el("points").textContent=globalThis.Data[L.get("Points")]+(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?"&nbsp;(softcapped)":"");
+    el("points").textContent=globalThis.Data[L.get("Points")];
+    el("point-softcap").textContent=(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?"&nbsp;(softcapped)":"");
     el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
     el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
     el("O1-extra").textContent="After U4: +"+globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]);
