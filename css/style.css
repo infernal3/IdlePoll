@@ -1,39 +1,37 @@
+@media (prefers-color-scheme: light) {
+  :root{
+    --base-color: #222222;
+    --bg-color: #ffffff;
+    --accent-color: #0c0cff;
+    --accent-color2: #ff0c0c;
+    --border-color: #2e2e2e;
+    --button-color: #cfcfcf;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root{
+    --base-color: #cdcdcd;
+    --bg-color: #000000;
+    --accent-color: #33e6ff;
+    --accent-color2: #ff3333;
+    --border-color: #c1c1c1;
+    --button-color: #565656;
+  }
+}
 body {
   margin: 8px;
   padding: 0px;
   border: 0px;
+  background: var(--bg-color);
 }
-@media (prefers-color-scheme: light) {
-  * {
-    color: #222222;
-  }
-  body {
-    background: #ffffff;
-  }
-  .shown {
-    color: #0c0cff;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  * {
-    color: #cdcdcd;
-  }
-  body {
-    background: #000000;
-  }
-  .shown {
-    color: #33e6ff;
-  }
-}
-
 * {
+  color: var(--base-color);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
-
 .shown {
   font-weight: bold;
+  color: var(--accent-color);
 }
-
 @media(width>1000px) {
   .aside {
     position: absolute;
@@ -61,10 +59,11 @@ div.footer > a {
   color: unset;
 }
 #point-softcap{
-  color: red;
+  color: var(--accent-color2);
 }
 button{
   width: auto;
   height: 2em;
-  border: 1px solid black;
+  border: 1px solid var(--border-color);
+  background: var(--button-color);
 }
