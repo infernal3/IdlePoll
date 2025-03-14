@@ -39,6 +39,9 @@ body {
     position: absolute;
     left: 40%;
   }
+  .aside::before{
+    content:"| "
+  }
 }
 @media(width<=1000px) {
   .aside {
@@ -56,4 +59,7 @@ div.footer {
 }
 div.footer > a {
   color: unset;
+}
+#point-softcap{
+  color: red;
 }
