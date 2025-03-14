@@ -1,7 +1,9 @@
+/**
+ * IdlePoll
+ * Copyright infernal3 2025
+ * Read the attached LICENSE for usage rights.
+*/
 (function(){
-  // IdlePoll
-  // Copyright © infernal3 2025
-  // Usage rights of this file are in the attached LICENSE.
   // 
   // Debug Mode
   var debugMode=true;
@@ -15,11 +17,22 @@
       console.warn("[IdlePoll] Element "+E+" not found, aborting.");
     }
   }
+  var format=function format(E){
+    if(typeof E==="number")return E<1e6?parseInt(E):E.toExponential(3).substr(0,5)+"e"+E.toExponential(3).substr(7);
+    if(typeof E==="object"&&(E instanceof Decimal)){
+      if(E.lt(new Decimal(1e6)))return E.toString();
+      if(E.lte(new Decimal("1e10000")))return E.mantissa.toFixed(3)+"e"+E.exponent;
+      if(E.lte(new Decimal("1e1000000")))return parseInt(E.mantissa)+"e"+E.exponent;
+      return parseInt(E.mantissa)+"e"+format(E.exponent);
+    }
+    console.warn("[IdlePoll] Invalid input to format, returning NaN: "+E);
+    return "NaN";
+  }
   var DelayMsg=["You can only take one action every 1 minute.",
                 "Actions are delayed for up to 1 minute.",
                 "It's IDLE! Wait 1 minute to take an action.",
                 "You need to wait 1 minute for the next action.",
-                "Actions have a cooldown for one minute.",
+                "Actions have a cooldown for 1 minute.",
                 "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
                 "Slow down! Wait 1 minute to take the next action.",
                 "Actions are throttled with a 1 minute delay.",
@@ -27,6 +40,11 @@
                 "Wait 1 minute to take your next action."];
   var randomDelayMsg=function randomDelayMsg(){
     return DelayMsg[parseInt(Math.random()*DelayMsg.length)];
+  }
+  var softcap=function softcap(pts){
+    // current softcap is log(x) after ee6 Points
+    // since ee6 + e6 is basically ee6, i can just make this a straight up hardcap at ee6 with no change in functionality
+    return Decimal.min(new Decimal("1e1000000"),pts);
   }
   var U1Scaling=function U1Scaling(x){
     var start=new Decimal(x);
@@ -44,7 +62,7 @@
     if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
     var temp=document.createElement("button");
     temp.id=id;
-    temp.textContent=`[${name}]`;
+    temp.innerHTML=`[${name}]`;
     temp.addEventListener("click",func);
     return temp;
   }
@@ -59,7 +77,7 @@
     div2.id="choices";
     div1.innerHTML=`
     Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round">1</span>.<br>
-    You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<br><br>Options:<br>
+    You&nbsp;have&nbsp;<span id="points">10</span>&nbsp;Points.<span id="point-softcap"></span><br><br>Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+<span id="O1Effect">100</span>&nbsp;Points</span>
     <span id="O1-extra" class="aside" style="display:none;"></span><br>
     <span id="O2"><span class="shown">[O2]</span>&nbsp;x<span id="O2Effect">10</span>&nbsp;Points</span>
@@ -77,7 +95,7 @@
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
-    div0.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
+    div0.append(createButton("click_hreset",`<span style="color:var(--accent-color2);">HARD RESET</span>`,()=>{HardReset();}));
     app.append(div0);
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
@@ -126,11 +144,12 @@
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
-    el("points").textContent=globalThis.Data[L.get("Points")];
-    el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
-    el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
-    el("O1-extra").textContent="After U4: +"+globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]);
-    el("O2-extra").textContent="After U4: x"+globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]);
+    el("points").textContent=format(globalThis.Data[L.get("Points")]);
+    el("point-softcap").textContent=(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?" (softcapped)":"");
+    el("O1Effect").textContent=format(globalThis.Data[L.get("Option")][1]);
+    el("O2Effect").textContent=format(globalThis.Data[L.get("Option")][2]);
+    el("O1-extra").textContent="After U4: +"+format(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]));
+    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]));
   }
   var parseDecimalData=function parseDecimalData(D,string,index){
     if(index){
@@ -252,6 +271,7 @@
       el("delay").textContent=invalid;
       return;
     }
+    Data[L.get("Points")]=softcap(Data[L.get("Points")]);
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
     el("delay").textContent="";
@@ -331,6 +351,8 @@
     globalThis.Export=Export;
     globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
+    if(debugMode)console.log("[IdlePoll:Debug] Loading complete.");
+    el("loading").style="display:none;";
   }
   if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
   main();

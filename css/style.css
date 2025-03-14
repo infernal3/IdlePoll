@@ -1,43 +1,46 @@
+@media (prefers-color-scheme: light) {
+  :root{
+    --base-color: #222222;
+    --bg-color: #ffffff;
+    --accent-color: #0c0cff;
+    --accent-color2: #ff0c0c;
+    --border-color: #2e2e2e;
+    --button-color: #cfcfcf;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root{
+    --base-color: #cdcdcd;
+    --bg-color: #000000;
+    --accent-color: #33e6ff;
+    --accent-color2: #ff3333;
+    --border-color: #c1c1c1;
+    --button-color: #565656;
+  }
+}
 body {
   margin: 8px;
   padding: 0px;
   border: 0px;
+  background: var(--bg-color);
+  overflow-x: hidden;
 }
-@media (prefers-color-scheme: light) {
-  * {
-    color: #222222;
-  }
-  body {
-    background: #ffffff;
-  }
-  .shown {
-    color: #0c0cff;
-  }
-}
-@media (prefers-color-scheme: dark) {
-  * {
-    color: #cdcdcd;
-  }
-  body {
-    background: #000000;
-  }
-  .shown {
-    color: #33e6ff;
-  }
-}
-
 * {
+  color: var(--base-color);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 16px;
 }
-
 .shown {
   font-weight: bold;
+  color: var(--accent-color);
 }
-
 @media(width>1000px) {
   .aside {
     position: absolute;
     left: 40%;
+  }
+  .aside::before{
+    content:"| "
   }
 }
 @media(width<=1000px) {
@@ -56,4 +59,26 @@ div.footer {
 }
 div.footer > a {
   color: unset;
+}
+#point-softcap{
+  color: var(--accent-color2);
+}
+button{
+  font-size:0.9rem;
+  user-select: none;
+  width: auto;
+  height: 2em;
+  border: 1px solid var(--border-color);
+  background: var(--button-color);
+}
+#loading{
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    padding-top:20%;
+    z-index:1234567890;
+    text-align:center;
+    background: var(--bg-color);
 }
