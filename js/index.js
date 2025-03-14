@@ -350,7 +350,7 @@
     globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
     if(debugMode)console.log("[IdlePoll:Debug] Loading complete.");
-    el("loading").style="";
+    el("loading").style="display:none;";
   }
   if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
   main();
