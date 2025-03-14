@@ -82,7 +82,7 @@
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
-    div0.append(createButton("click_hreset","HARD RESET",()=>{HardReset();}));
+    div0.append(createButton("click_hreset",`<span style="color:var(--accent-color2);">HARD RESET</span>`,()=>{HardReset();}));
     app.append(div0);
     app.append(div1);
     div2.append(createButton("click1","O1",()=>{HandleAction("O1");}));
