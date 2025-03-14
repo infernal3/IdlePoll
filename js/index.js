@@ -15,6 +15,17 @@
       console.warn("[IdlePoll] Element "+E+" not found, aborting.");
     }
   }
+  var format=function format(E){
+    if(typeof E==="number")return E<1e6?parseInt(E):E.toExponential(3).substr(0,5)+"e"+E.toExponential(3).substr(7);
+    if(typeof E==="object"&&(E instanceof Decimal)){
+      if(E.lt(new Decimal(1e6)))return E.toString();
+      if(E.lte(new Decimal("1e10000")))return E.mantissa.toFixed(3)+"e"+E.exponent;
+      if(E.lte(new Decimal("1e1000000")))return parseInt(E.mantissa)+"e"+E.exponent;
+      return parseInt(E.mantissa)+"e"+format(E.exponent);
+    }
+    console.warn("[IdlePoll] Invalid input to format, returning NaN: "+E);
+    return "NaN";
+  }
   var DelayMsg=["You can only take one action every 1 minute.",
                 "Actions are delayed for up to 1 minute.",
                 "It's IDLE! Wait 1 minute to take an action.",
@@ -131,12 +142,12 @@
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
-    el("points").textContent=globalThis.Data[L.get("Points")];
+    el("points").textContent=format(globalThis.Data[L.get("Points")]);
     el("point-softcap").textContent=(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?" (softcapped)":"");
-    el("O1Effect").textContent=globalThis.Data[L.get("Option")][1];
-    el("O2Effect").textContent=globalThis.Data[L.get("Option")][2];
-    el("O1-extra").textContent="After U4: +"+globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]);
-    el("O2-extra").textContent="After U4: x"+globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]);
+    el("O1Effect").textContent=format(globalThis.Data[L.get("Option")][1]);
+    el("O2Effect").textContent=format(globalThis.Data[L.get("Option")][2]);
+    el("O1-extra").textContent="After U4: +"+format(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]));
+    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]));
   }
   var parseDecimalData=function parseDecimalData(D,string,index){
     if(index){
