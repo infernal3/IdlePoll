@@ -349,6 +349,8 @@
     globalThis.Export=Export;
     globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
+    if(debugMode)console.log("[IdlePoll:Debug] Loading complete.");
+    el("loading").style="";
   }
   if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
   main();
