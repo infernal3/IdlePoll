@@ -71,3 +71,14 @@ button{
   border: 1px solid var(--border-color);
   background: var(--button-color);
 }
+#loading{
+    position:absolute;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    padding-top:20%;
+    z-index:1234567890;
+    text-align:center;
+    background: var(--bg-color);
+}
