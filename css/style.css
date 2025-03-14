@@ -28,7 +28,7 @@ body {
 * {
   color: var(--base-color);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
 }
 .shown {
   font-weight: bold;
@@ -64,6 +64,7 @@ div.footer > a {
   color: var(--accent-color2);
 }
 button{
+  font-size:0.9rem;
   user-select: none;
   width: auto;
   height: 2em;
