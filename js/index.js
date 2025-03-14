@@ -28,6 +28,11 @@
   var randomDelayMsg=function randomDelayMsg(){
     return DelayMsg[parseInt(Math.random()*DelayMsg.length)];
   }
+  var softcap=function softcap(pts){
+    // current softcap is log(x) after ee6 Points
+    // since ee6 + e6 is basically ee6, i can just make this a straight up hardcap at ee6 with no change in functionality
+    return Decimal.min(new Decimal("1e1000000"),pts);
+  }
   var U1Scaling=function U1Scaling(x){
     var start=new Decimal(x);
     return new Decimal(10).pow(start.lte(10)?start.mul(3):start.lte(25)?(start.pow(2).mul(1.5).sub(start.mul(25.5))).add(135):new Decimal(3).pow(start.sub(25)).mul(48).add(387));
@@ -252,6 +257,7 @@
       el("delay").textContent=invalid;
       return;
     }
+    Data[L.get("Points")]=softcap(Data[L.get("Points")]);
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
     el("delay").textContent="";
