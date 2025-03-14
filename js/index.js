@@ -49,7 +49,7 @@
     if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
     var temp=document.createElement("button");
     temp.id=id;
-    temp.textContent=`[${name}]`;
+    temp.innerHTML=`[${name}]`;
     temp.addEventListener("click",func);
     return temp;
   }
