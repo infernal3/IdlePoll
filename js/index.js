@@ -216,12 +216,12 @@
       return;
     }
     if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
+    Data=JSON.parse(atob(data));
     Data=parseDecimalData(Data,"Points");
     Data=parseDecimalData(Data,"Option",1);
     Data=parseDecimalData(Data,"Option",2);
     if(!"number"==typeof Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=Number(Data[L.get("Upgrade")][1]);
     if(isNaN(Data[L.get("Upgrade")][1]))Data[L.get("Upgrade")][1]=0;
-    Data=JSON.parse(atob(data));
   }
   var ImportClipboard=async function ImportClipboard(){
     if(debugMode)console.log("[IdlePoll:Debug] function call importClipboard();");
