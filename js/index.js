@@ -222,6 +222,7 @@
     Data=parseDecimalData(Data,"Option",2);
     if(!"number"==typeof Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=Number(Data[L.get("Upgrade")][1]);
     if(isNaN(Data[L.get("Upgrade")][1]))Data[L.get("Upgrade")][1]=0;
+    setupVariableHTML();
   }
   var ImportClipboard=async function ImportClipboard(){
     if(debugMode)console.log("[IdlePoll:Debug] function call importClipboard();");
