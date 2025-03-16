@@ -116,6 +116,7 @@
     div2.append(createButton("click12","U2",()=>{HandleAction("U2");}));
     div2.append(createButton("click13","U3",()=>{HandleAction("U3");}));
     div2.append(createButton("click14","U4",()=>{HandleAction("U4");}));
+    div2.append(createButton("click21","A1",()=>{HandleAction("A1");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -147,6 +148,9 @@
       el("U4-extra").textContent="BOUGHT";
       el("O1-extra").style="";
       el("O2-extra").style="";
+    }
+    if(Data[L.get("Auto")][1]){
+      el("A1-extra").textContent="BOUGHT";
     }
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
@@ -277,6 +281,9 @@
       case "U4":
         invalid=U4();
         break;
+      case "A1":
+        invalid=A1();
+        break;
       default:
         console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
@@ -285,7 +292,7 @@
       el("delay").textContent=invalid;
       return;
     }
-    if(!!Data[L.get("Auto")][1])A1();
+    if(Data[L.get("Auto")][1])A1Handler();
     Data[L.get("Points")]=softcap(Data[L.get("Points")]);
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
@@ -362,6 +369,14 @@
   }
   var A1=function A1(){
     if(debugMode)console.log("[IdlePoll:Debug] function call A1();");
+    if(Data[L.get("Auto")][1])return "A1 already bought";
+    if(Data[L.get("Points")].lt("1e3000"))return "Insufficient Points: Need 1e3000";
+    el("A1-extra").textContent="BOUGHT";
+    Data[L.get("Points")]=Data[L.get("Points")].sub("1e3000");
+    Data[L.get("Auto")][1]=1;
+  }
+  var A1Handler=function A1Handler(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call A1Handler();");
     O1();
     O2();
     O3();
