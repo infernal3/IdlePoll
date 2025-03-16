@@ -7,8 +7,10 @@
 */
 (function(){
   // 
-  // Debug Mode
+  // Debug Mode: Print extra stuff for debugging
   var debugMode=true;
+  // Dev Mode: Disables cooldown
+  var devMode=true;
   //
   //
   //
@@ -241,7 +243,7 @@
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
     if(debugMode)console.log(`[IdlePoll:Debug] function call HandleAction(${action});`);
-    if(Date.now()-Data[L.get("Last")]<60000){
+    if(Date.now()-Data[L.get("Last")]<(devMode?0:60000)){
       el("delay").textContent=randomDelayMsg();
       console.log(`[IdlePoll] Action "${action}" was prevented.`);
       return;
