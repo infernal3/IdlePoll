@@ -3,14 +3,14 @@
  * Copyright infernal3 2025
  * Read the attached LICENSE for usage rights.
  *
- * Version: Pre-IC, March 14 2025 (Dev build)
+ * Version: Pre-IC, March 16 2025
 */
 (function(){
   // 
   // Debug Mode: Print extra stuff for debugging
   var debugMode=true;
   // Dev Mode: Disables cooldown
-  var devMode=true;
+  var devMode=false;
   //
   //
   //
