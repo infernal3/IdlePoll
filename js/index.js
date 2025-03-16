@@ -184,12 +184,21 @@
       if(localStorage&&localStorage.getItem("idlePollSave")){
         if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
         var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
+        if(!Data){
+          // Extremely malformatted data? Send them to the error page.
+          window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
+        }
+        // Parse in Legacy/Malformatted data
+        if(!Data[L.get("Option")])Data[L.get("Option")]=[void 0,new Decimal(100),new Decimal(10),void 0];
+        if(!Data[L.get("Upgrade")])Data[L.get("Upgrade")]=[void 0,0,0,0,0];
+        if(!Data[L.get("Auto")])Data[L.get("Auto")]=[void 0,0];
         // Parse Decimals
         Data=parseDecimalData(Data,"Points");
         Data=parseDecimalData(Data,"Option",1);
         Data=parseDecimalData(Data,"Option",2);
         if(!"number"==typeof Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=Number(Data[L.get("Upgrade")][1]);
         if(isNaN(Data[L.get("Upgrade")][1]))Data[L.get("Upgrade")][1]=0;
+        
         return Data;
       }
       // Save does not exist
