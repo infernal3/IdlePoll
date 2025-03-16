@@ -307,6 +307,7 @@
       if(Data[L.get("Points")].lt(nextPtsNeeded))return `Insufficient Points: Need ${nextPtsNeeded}`;
       Data[L.get("Upgrade")][1]=bulkAmt;
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
+      nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${nextPtsNeeded} Points`;
       Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
       Data[L.get("Option")][2]=new Decimal(10).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
