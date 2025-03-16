@@ -130,7 +130,7 @@
     if(Data[L.get("Upgrade")][3]){
       el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
-      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);
+      var pointsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
     }
     if(Data[L.get("Upgrade")][4]){
@@ -296,13 +296,15 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][3]){
       // We have U3. U1 is now rebuyable.
+      // See how many we can buy:
+      var bulkAmt=invU1Scaling(Data[L.get("Points")]);
       if(!Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=0;
-      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);// TODO: add U1 scaling
-      if(Data[L.get("Upgrade")][1]>=10)return "Uncaught Error: U1Scaling is not defined";
-      if(Data[L.get("Points")].lt(pointsNeeded))return `Insufficient Points: Need ${pointsNeeded}`;
-      Data[L.get("Upgrade")][1]++;//TODO: add bulk buy
+      var pointsNeeded=U1Scaling(bulkAmt);
+      var nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")]+1);
+      if(Data[L.get("Points")].lt(nextPtsNeeded))return `Insufficient Points: Need ${nextPtsNeeded}`;
+      Data[L.get("Upgrade")][1]=bulkAmt;
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
-      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
+      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${nextPtsNeeded} Points`;
       Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
       Data[L.get("Option")][2]=new Decimal(10).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
     } else {
