@@ -64,7 +64,7 @@
   }
   // Data point obfuscation! No idea why I did this, it just exists.
   // Yes, it's confusing. That is LITERALLY THE POINT.
-  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
+  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"],["Auto",".QXV0b21"]]);
   
   var createButton=function createButton(id,name,func){
     if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
@@ -100,6 +100,9 @@
     <span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
     <span id="U4"><span class="shown">[U4]</span>&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.</span>
     <span id="U4-extra" class="aside">Cost: 1e100 Points</span><br>
+    <br>Automation:<br>
+    <span id="A1"><span class="shown">[A1]</span>&nbsp;Activate&nbsp;O1-O3&nbsp;an&nbsp;additional&nbsp;time&nbsp;every&nbsp;round.</span>
+    <span id="A1-extra" class="aside">Cost: 1e3000 Points</span><br>
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
@@ -187,10 +190,13 @@
       }
       // Save does not exist
       if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0,0];
+      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],
+                  obj2=[void 0,0,0,0,0],
+                  obj3=[void 0,0];
       L.forEach((v,k)=>{Data[v]=undefined;});
       Data[L.get("Option")]=obj1;
       Data[L.get("Upgrade")]=obj2;
+      Data[L.get("Auto")]=obj3;
       Data[L.get("Points")]=new Decimal(10);
       Data[L.get("Round")]=1;
       Data[L.get("Last")]=Date.now()-60000;
@@ -279,6 +285,7 @@
       el("delay").textContent=invalid;
       return;
     }
+    if(!!Data[L.get("Auto")][1])A1();
     Data[L.get("Points")]=softcap(Data[L.get("Points")]);
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
@@ -352,6 +359,12 @@
     el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
     Data[L.get("Upgrade")][4]=1;
+  }
+  var A1=function A1(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call A1();");
+    O1();
+    O2();
+    O3();
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
