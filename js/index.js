@@ -303,7 +303,7 @@
       var bulkAmt=invU1Scaling(Data[L.get("Points")]);
       if(!Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=0;
       var pointsNeeded=U1Scaling(bulkAmt);
-      var nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")]+1);
+      var nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
       if(Data[L.get("Points")].lt(nextPtsNeeded))return `Insufficient Points: Need ${nextPtsNeeded}`;
       Data[L.get("Upgrade")][1]=bulkAmt;
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
