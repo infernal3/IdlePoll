@@ -2,11 +2,15 @@
  * IdlePoll
  * Copyright infernal3 2025
  * Read the attached LICENSE for usage rights.
+ *
+ * Version: Pre-IC, March 16 2025
 */
 (function(){
   // 
-  // Debug Mode
+  // Debug Mode: Print extra stuff for debugging
   var debugMode=true;
+  // Dev Mode: Disables cooldown
+  var devMode=false;
   //
   //
   //
@@ -51,12 +55,16 @@
     return new Decimal(10).pow(start.lte(10)?start.mul(3):start.lte(25)?(start.pow(2).mul(1.5).sub(start.mul(25.5))).add(135):new Decimal(3).pow(start.sub(25)).mul(48).add(387));
   }
   var invU1Scaling=function invU1Scaling(x){
-    var start=new Decimal(x).log10();
-    return start>=531?start.sub(387).div(48).log10().div(Decimal.log10(3)).add(25).floor():start>=36?start.sub(26.625).div(1.5).sqrt().add(8.5).floor():start>=3?start.div(3).floor():new Decimal(0);
+    var start=new Decimal(new Decimal(x).log10()),
+    ret= start.gte(531)?new Decimal(start.sub(387).div(48).log10()).div(Decimal.log10(3)).add(25).floor():
+           start.gte(36)?start.sub(26.625).div(1.5).sqrt().add(8.5).floor():
+           start.gte(3)?start.div(3).floor():
+           new Decimal(0);
+    return ret.toNumber();
   }
   // Data point obfuscation! No idea why I did this, it just exists.
   // Yes, it's confusing. That is LITERALLY THE POINT.
-  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"]]);
+  var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"],["Auto",".QXV0b21"]]);
   
   var createButton=function createButton(id,name,func){
     if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
@@ -92,6 +100,9 @@
     <span id="U3-extra" class="aside">Cost: 1e50 Points</span><br>
     <span id="U4"><span class="shown">[U4]</span>&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.</span>
     <span id="U4-extra" class="aside">Cost: 1e100 Points</span><br>
+    <br>Automation:<br>
+    <span id="A1"><span class="shown">[A1]</span>&nbsp;Activate&nbsp;O1-O3&nbsp;an&nbsp;additional&nbsp;time&nbsp;every&nbsp;round.</span>
+    <span id="A1-extra" class="aside">Cost: 1e3000 Points</span><br>
     `;
     div0.append(createButton("click_import","Import from Clipboard",()=>{ImportClipboard();}));
     div0.append(createButton("click_export","Export to Clipboard",()=>{Export();}));
@@ -105,6 +116,7 @@
     div2.append(createButton("click12","U2",()=>{HandleAction("U2");}));
     div2.append(createButton("click13","U3",()=>{HandleAction("U3");}));
     div2.append(createButton("click14","U4",()=>{HandleAction("U4");}));
+    div2.append(createButton("click21","A1",()=>{HandleAction("A1");}));
     div3.id="delay";
     div2.append(div3);
     app.append(div2);
@@ -128,7 +140,7 @@
     if(Data[L.get("Upgrade")][3]){
       el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
-      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);
+      var pointsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
     }
     if(Data[L.get("Upgrade")][4]){
@@ -136,6 +148,9 @@
       el("U4-extra").textContent="BOUGHT";
       el("O1-extra").style="";
       el("O2-extra").style="";
+    }
+    if(Data[L.get("Auto")][1]){
+      el("A1-extra").textContent="BOUGHT";
     }
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
@@ -179,10 +194,13 @@
       }
       // Save does not exist
       if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],obj2=[void 0,0,0,0,0];
+      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],
+                  obj2=[void 0,0,0,0,0],
+                  obj3=[void 0,0];
       L.forEach((v,k)=>{Data[v]=undefined;});
       Data[L.get("Option")]=obj1;
       Data[L.get("Upgrade")]=obj2;
+      Data[L.get("Auto")]=obj3;
       Data[L.get("Points")]=new Decimal(10);
       Data[L.get("Round")]=1;
       Data[L.get("Last")]=Date.now()-60000;
@@ -241,7 +259,7 @@
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
     if(debugMode)console.log(`[IdlePoll:Debug] function call HandleAction(${action});`);
-    if(Date.now()-Data[L.get("Last")]<60000){
+    if(Date.now()-Data[L.get("Last")]<(devMode?0:60000)){
       el("delay").textContent=randomDelayMsg();
       console.log(`[IdlePoll] Action "${action}" was prevented.`);
       return;
@@ -269,6 +287,9 @@
       case "U4":
         invalid=U4();
         break;
+      case "A1":
+        invalid=A1();
+        break;
       default:
         console.warn(`[IdlePoll] Action ${action} does not exist.`);
         break;
@@ -277,6 +298,7 @@
       el("delay").textContent=invalid;
       return;
     }
+    if(Data[L.get("Auto")][1])A1Handler();
     Data[L.get("Points")]=softcap(Data[L.get("Points")]);
     Data[L.get("Round")]+=1;
     Data[L.get("Last")]=Date.now();
@@ -300,13 +322,16 @@
     if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
     if(Data[L.get("Upgrade")][3]){
       // We have U3. U1 is now rebuyable.
+      // See how many we can buy:
+      var bulkAmt=invU1Scaling(Data[L.get("Points")]);
       if(!Data[L.get("Upgrade")][1])Data[L.get("Upgrade")][1]=0;
-      var pointsNeeded=new Decimal(1000).pow(Data[L.get("Upgrade")][1]+1);// TODO: add U1 scaling
-      if(Data[L.get("Upgrade")][1]>=10)return "Uncaught Error: U1Scaling is not defined";
-      if(Data[L.get("Points")].lt(pointsNeeded))return `Insufficient Points: Need ${pointsNeeded}`;
-      Data[L.get("Upgrade")][1]++;//TODO: add bulk buy
+      var pointsNeeded=U1Scaling(bulkAmt);
+      var nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
+      if(Data[L.get("Points")].lt(nextPtsNeeded))return `Insufficient Points: Need ${nextPtsNeeded}`;
+      Data[L.get("Upgrade")][1]=bulkAmt;
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
-      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
+      nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
+      el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${format(nextPtsNeeded)} Points`;
       Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
       Data[L.get("Option")][2]=new Decimal(10).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
     } else {
@@ -347,6 +372,20 @@
     el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
     Data[L.get("Upgrade")][4]=1;
+  }
+  var A1=function A1(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call A1();");
+    if(Data[L.get("Auto")][1])return "A1 already bought";
+    if(Data[L.get("Points")].lt("1e3000"))return "Insufficient Points: Need 1e3000";
+    el("A1-extra").textContent="BOUGHT";
+    Data[L.get("Points")]=Data[L.get("Points")].sub("1e3000");
+    Data[L.get("Auto")][1]=1;
+  }
+  var A1Handler=function A1Handler(){
+    if(debugMode)console.log("[IdlePoll:Debug] function call A1Handler();");
+    O1();
+    O2();
+    O3();
   }
   var main=function main(){
     if(debugMode)console.log("[IdlePoll:Debug] function call main();");
