@@ -53,8 +53,8 @@
     return new Decimal(10).pow(start.lte(10)?start.mul(3):start.lte(25)?(start.pow(2).mul(1.5).sub(start.mul(25.5))).add(135):new Decimal(3).pow(start.sub(25)).mul(48).add(387));
   }
   var invU1Scaling=function invU1Scaling(x){
-    var start=new Decimal(x).log10();
-    return start>=531?start.sub(387).div(48).log10().div(Decimal.log10(3)).add(25).floor():start>=36?start.sub(26.625).div(1.5).sqrt().add(8.5).floor():start>=3?start.div(3).floor():new Decimal(0);
+    var start=new Decimal(new Decimal(x).log10());
+    return start.gte(531)?start.sub(387).div(48).log10().div(Decimal.log10(3)).add(25).floor():start.gte(36)?start.sub(26.625).div(1.5).sqrt().add(8.5).floor():start.gte(3)?start.div(3).floor():new Decimal(0);
   }
   // Data point obfuscation! No idea why I did this, it just exists.
   // Yes, it's confusing. That is LITERALLY THE POINT.
