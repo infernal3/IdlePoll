@@ -157,7 +157,7 @@
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
     }
     if(Data[L.get("Upgrade")][4]){
-      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1's&nbsp;effect&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
       el("U4-extra").textContent="BOUGHT";
       el("O1-extra").style="";
       el("O2-extra").style="";
@@ -177,7 +177,7 @@
     el("O1Effect").textContent=format(globalThis.Data[L.get("Option")][1]);
     el("O2Effect").textContent=format(globalThis.Data[L.get("Option")][2]);
     el("O1-extra").textContent="After U4: +"+format(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]));
-    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]));
+    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Round")]))*/;
   }
   var parseDecimalData=function parseDecimalData(D,string,index){
     if(index){
@@ -333,7 +333,7 @@
   }
   var O2=function O2(){
     fc("O2");
-    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1));
+    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1))*/;
   }
   var O3=function O3(){
     fc("O3");
@@ -391,7 +391,7 @@
     el("O1-extra").style="";
     el("O2-extra").style="";
     el("U4-extra").textContent="BOUGHT";
-    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1's&nbsp;effect&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
     Data[L.get("Upgrade")][4]=1;
   }
