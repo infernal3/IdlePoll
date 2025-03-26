@@ -154,6 +154,7 @@
       el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
       var pointsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
+      el("U1Effect").textContent=format(nd(1000).pow(Data[L.get("Upgrade")][1]));
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
     }
     if(Data[L.get("Upgrade")][4]){
@@ -364,6 +365,7 @@
       Data[L.get("Upgrade")][1]=1;
       Data[L.get("Option")][2]=nd(10000);
     }
+    el("U1Effect").textContent=format(nd(1000).pow(Data[L.get("Upgrade")][1]))
   }
   var U2=function U2(){
     fc("U2");
