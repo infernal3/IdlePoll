@@ -3,8 +3,58 @@
  * Copyright infernal3 2025
  * Read the attached LICENSE for usage rights.
  *
- * Version: Pre-IC, March 16 2025 (Dev build)
+ * Version: Pre-IC, March 26 2025 (Dev build)
 */
+const IDLE_POLL={
+  DelayMsg: ["You can only take one action every 1 minute.",
+             "Actions are delayed for up to 1 minute.",
+             "It's IDLE! Wait 1 minute to take an action.",
+             "You need to wait 1 minute for the next action.",
+             "Actions have a cooldown for 1 minute.",
+             "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
+             "Slow down! Wait 1 minute to take the next action.",
+             "Actions are throttled with a 1 minute delay.",
+             "You need to wait 1 minute to perform this action.",
+             "Wait 1 minute to take your next action."
+            ],
+  UpgradeText: [
+    void 0,{
+      unpurchased: `Multiply ${Data[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x1e3.`,
+      purchased: `Multiplying ${Data[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x${format(nd(1000).pow(Data[L.get("Upgrade")][1]))}.`,
+    },{
+      unpurchased: "Unlock O3, which raises Points to ^1.5.",
+      purchased: "O3 is unlocked.",
+    },{
+      unpurchased: "Make U1 rebuyable and boost O1.",
+      purchased: "U1 is rebuyable and now boosts O1.",
+    },{
+      unpurchased: `Raise O1${false ? ", O2" : ""} to the round number.`,// TODO: make this CM10 instead of false
+      purchased: `Raising O1${false ? ", O2" : ""} to the round number.`,
+    }
+  ],
+  Catalyst: {
+    MilestoneText: ["1 IC: Upgrades no longer spend Points. Start with 100 Points on reset.",
+                    "10 IC: Keep U2-U4, A1 on resets. U4 boosts O2.",
+                    "NYI",
+    ],
+    Milestones: [1, 10],
+    UpgradeText: [
+      void 0,{
+        unpurchased: "Boost O1, O2 based on total IC.",
+      },{
+        unpurchased: "Boost IC gain based on IC. ^10 to C1.",
+        purchased: "Boosting IC gain based on IC. ^10 to C1."
+      },{
+        unpurchased: "Weaken the Point Softcap.",
+        purchased: "Weakening the Point Softcap.",
+      },{
+        unpurchased: "Delay U1's exponential scaling.",
+      },{
+        unpurchased: "Pending Changes",//TODO
+      },
+    ],
+  },
+};
 (function(){
   // 
   // Debug Mode: Print extra stuff for debugging
@@ -45,18 +95,8 @@
     console.warn(`[IdlePoll] Invalid input to format, type "${typeof E}". Returning NaN: ${E}`);
     return "NaN";
   }
-  var DelayMsg=["You can only take one action every 1 minute.",
-                "Actions are delayed for up to 1 minute.",
-                "It's IDLE! Wait 1 minute to take an action.",
-                "You need to wait 1 minute for the next action.",
-                "Actions have a cooldown for 1 minute.",
-                "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
-                "Slow down! Wait 1 minute to take the next action.",
-                "Actions are throttled with a 1 minute delay.",
-                "You need to wait 1 minute to perform this action.",
-                "Wait 1 minute to take your next action."];
   var randomDelayMsg=function randomDelayMsg(){
-    return DelayMsg[parseInt(Math.random()*DelayMsg.length)];
+    return IDLE_POLL.DelayMsg[parseInt(Math.random()*IDLE_POLL.DelayMsg.length)];
   }
   var softcap=function softcap(pts){
     // current softcap is log(x) after ee6 Points
