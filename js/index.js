@@ -19,17 +19,17 @@ const IDLE_POLL={
             ],
   UpgradeText: [
     void 0,{
-      unpurchased: `Multiply ${Data[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x1e3.`,
-      purchased: `Multiplying ${Data[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x${format(nd(1000).pow(Data[L.get("Upgrade")][1]))}.`,
+      unpurchased: D=>`Multiply ${D[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x1e3.`,
+      purchased: D=>`Multiplying ${D[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x${format(nd(1000).pow(Data[L.get("Upgrade")][1]))}.`,
     },{
-      unpurchased: "Unlock O3, which raises Points to ^1.5.",
-      purchased: "O3 is unlocked.",
+      unpurchased: ()=>"Unlock O3, which raises Points to ^1.5.",
+      purchased: ()=>"O3 is unlocked.",
     },{
-      unpurchased: "Make U1 rebuyable and boost O1.",
-      purchased: "U1 is rebuyable and now boosts O1.",
+      unpurchased: ()=>"Make U1 rebuyable and boost O1.",
+      purchased: ()=>"U1 is rebuyable and now boosts O1.",
     },{
-      unpurchased: `Raise O1${false ? ", O2" : ""} to the round number.`,// TODO: make this CM10 instead of false
-      purchased: `Raising O1${false ? ", O2" : ""} to the round number.`,
+      unpurchased: ()=>`Raise O1${false ? ", O2" : ""} to the round number.`,// TODO: make this CM10 instead of false
+      purchased: ()=>`Raising O1${false ? ", O2" : ""} to the round number.`,
     }
   ],
   Catalyst: {
