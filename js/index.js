@@ -3,7 +3,7 @@
  * Copyright infernal3 2025
  * Read the attached LICENSE for usage rights.
  *
- * Version: Pre-IC, March 26 2025 (Dev build)
+ * Version: Pre-IC, April 17 2025 (Dev build)
 */
 const IDLE_POLL={
   DelayMsg: ["You can only take one action every 1 minute.",
@@ -218,7 +218,7 @@ const IDLE_POLL={
     el("O1Effect").textContent=format(globalThis.Data[L.get("Option")][1]);
     el("O2Effect").textContent=format(globalThis.Data[L.get("Option")][2]);
     el("O1-extra").textContent="After U4: +"+format(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]));
-    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Round")]))*/;
+    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Round")]))*/);
   }
   var parseDecimalData=function parseDecimalData(D,string,index){
     if(index){
@@ -374,7 +374,7 @@ const IDLE_POLL={
   }
   var O2=function O2(){
     fc("O2");
-    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1))*/;
+    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1))*/);
   }
   var O3=function O3(){
     fc("O3");
