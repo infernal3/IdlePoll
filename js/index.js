@@ -99,9 +99,19 @@ const IDLE_POLL={
     return IDLE_POLL.DelayMsg[parseInt(Math.random()*IDLE_POLL.DelayMsg.length)];
   }
   var softcap=function softcap(pts){
+
+    let sc=nd("1e1000000");
     // current softcap is log(x) after ee6 Points
     // since ee6 + e6 is basically ee6, i can just make this a straight up hardcap at ee6 with no change in functionality
-    return Decimal.min(nd("1e1000000"),pts);
+    if(false){ // C3 not implemented
+      //\left\{x<t:x,t\left(xI\left(t\right)\right)^{u}\right\}
+      if(ptd.lt(sc)){
+        return pts;
+      } else {
+        return sc.mul(Decimal.pow(sc.div(t),0.385));
+      }
+    }
+    else return Decimal.min(sc,pts);
   }
   var U1Scaling=function U1Scaling(x){
     var start=nd(x);
