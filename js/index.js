@@ -104,12 +104,14 @@ const IDLE_POLL={
     // current softcap is log(x) after ee6 Points
     // since ee6 + e6 is basically ee6, i can just make this a straight up hardcap at ee6 with no change in functionality
     if(false){ // C3 not implemented
-      //\left\{x<t:x,t\left(xI\left(t\right)\right)^{u}\right\}
-      if(ptd.lt(sc)){
-        return pts;
-      } else {
-        return sc.mul(Decimal.pow(sc.div(t),0.385));
-      }
+      return pts.lt(sc) ? pts : sc.mul(Decimal.pow(pts.div(sc),0.385));
+    }
+    else return Decimal.min(sc,pts);
+  }
+  var invSoftcap=function invSoftcap(pts){
+    let sc=nd("1e1000000");
+    if(false){
+      return pts.lt(sc) ? pts : sc.mul(Decimal.pow(pts.div(sc),1/0.385));
     }
     else return Decimal.min(sc,pts);
   }
