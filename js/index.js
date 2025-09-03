@@ -3,17 +3,80 @@
  * Copyright infernal3 2025
  * Read the attached LICENSE for usage rights.
  *
- * Version: Pre-IC, March 16 2025
+ * Version: Pre-IC, April 17 2025 (Dev build)
 */
+const IDLE_POLL={
+  DelayMsg: ["You can only take one action every 1 minute.",
+             "Actions are delayed for up to 1 minute.",
+             "It's IDLE! Wait 1 minute to take an action.",
+             "You need to wait 1 minute for the next action.",
+             "Actions have a cooldown for 1 minute.",
+             "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
+             "Slow down! Wait 1 minute to take the next action.",
+             "Actions are throttled with a 1 minute delay.",
+             "You need to wait 1 minute to perform this action.",
+             "Wait 1 minute to take your next action."
+            ],
+  UpgradeText: [
+    void 0,{
+      unpurchased: D=>`Multiply ${D[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x1e3.`,
+      purchased: D=>`Multiplying ${D[L.get("Upgrade")][3] ? "O1, " : ""}O2's effects by x${format(nd(1000).pow(Data[L.get("Upgrade")][1]))}.`,
+    },{
+      unpurchased: ()=>"Unlock O3, which raises Points to ^1.5.",
+      purchased: ()=>"O3 is unlocked.",
+    },{
+      unpurchased: ()=>"Make U1 rebuyable and boost O1.",
+      purchased: ()=>"U1 is rebuyable and now boosts O1.",
+    },{
+      unpurchased: ()=>`Raise O1${false ? ", O2" : ""} to the round number.`,// TODO: make this CM10 instead of false
+      purchased: ()=>`Raising O1${false ? ", O2" : ""} to the round number.`,
+    }
+  ],
+  Catalyst: {
+    MilestoneText: ["1 IC: Upgrades no longer spend Points. Start with 100 Points on reset.",
+                    "10 IC: Keep U2-U4, A1 on resets. U4 boosts O2.",
+                    "NYI",
+    ],
+    Milestones: [1, 10],
+    UpgradeText: [
+      void 0,{
+        unpurchased: "Boost O1, O2 based on total IC.",
+      },{
+        unpurchased: "Boost IC gain based on IC. ^10 to C1.",
+        purchased: "Boosting IC gain based on IC. ^10 to C1."
+      },{
+        unpurchased: "Weaken the Point Softcap.",
+        purchased: "Weakening the Point Softcap.",
+      },{
+        unpurchased: "Delay U1's exponential scaling.",
+      },{
+        unpurchased: "Pending Changes",//TODO
+      },
+    ],
+  },
+};
 (function(){
   // 
   // Debug Mode: Print extra stuff for debugging
   var debugMode=true;
   // Dev Mode: Disables cooldown
-  var devMode=false;
+  var devMode=true;
   //
   //
   //
+  var db=function db(E){
+    if(debugMode)console.log("[IdlePoll:Debug] "+E);
+  }
+  var fc=function fc(E){
+    db(`function call ${E}();`);
+  }
+  var nd=function nd(E){
+    try{
+      return nd(E);
+    }catch(err){
+      console.warn("[IdlePoll] Decimal parse error: "+E)
+    }
+  }
   var el=function el(E){
     try{
       return document.getElementById(E);
@@ -24,42 +87,44 @@
   var format=function format(E){
     if(typeof E==="number")return E<1e6?parseInt(E):E.toExponential(3).substr(0,5)+"e"+E.toExponential(3).substr(7);
     if(typeof E==="object"&&(E instanceof Decimal)){
-      if(E.lt(new Decimal(1e6)))return E.toString();
-      if(E.lte(new Decimal("1e10000")))return E.mantissa.toFixed(3)+"e"+E.exponent;
-      if(E.lte(new Decimal("1e1000000")))return parseInt(E.mantissa)+"e"+E.exponent;
+      if(E.lt(nd(1e6)))return E.toString();
+      if(E.lte(nd("1e10000")))return E.mantissa.toFixed(3)+"e"+E.exponent;
+      if(E.lte(nd("1e1000000")))return parseInt(E.mantissa)+"e"+E.exponent;
       return parseInt(E.mantissa)+"e"+format(E.exponent);
     }
-    console.warn("[IdlePoll] Invalid input to format, returning NaN: "+E);
+    console.warn(`[IdlePoll] Invalid input to format, type "${typeof E}". Returning NaN: ${E}`);
     return "NaN";
   }
-  var DelayMsg=["You can only take one action every 1 minute.",
-                "Actions are delayed for up to 1 minute.",
-                "It's IDLE! Wait 1 minute to take an action.",
-                "You need to wait 1 minute for the next action.",
-                "Actions have a cooldown for 1 minute.",
-                "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
-                "Slow down! Wait 1 minute to take the next action.",
-                "Actions are throttled with a 1 minute delay.",
-                "You need to wait 1 minute to perform this action.",
-                "Wait 1 minute to take your next action."];
   var randomDelayMsg=function randomDelayMsg(){
-    return DelayMsg[parseInt(Math.random()*DelayMsg.length)];
+    return IDLE_POLL.DelayMsg[parseInt(Math.random()*IDLE_POLL.DelayMsg.length)];
   }
   var softcap=function softcap(pts){
+
+    let sc=nd("1e1000000");
     // current softcap is log(x) after ee6 Points
     // since ee6 + e6 is basically ee6, i can just make this a straight up hardcap at ee6 with no change in functionality
-    return Decimal.min(new Decimal("1e1000000"),pts);
+    if(false){ // C3 not implemented
+      return pts.lt(sc) ? pts : sc.mul(Decimal.pow(pts.div(sc),0.385));
+    }
+    else return Decimal.min(sc,pts);
+  }
+  var invSoftcap=function invSoftcap(pts){
+    let sc=nd("1e1000000");
+    if(false){
+      return pts.lt(sc) ? pts : sc.mul(Decimal.pow(pts.div(sc),1/0.385));
+    }
+    else return Decimal.min(sc,pts);
   }
   var U1Scaling=function U1Scaling(x){
-    var start=new Decimal(x);
-    return new Decimal(10).pow(start.lte(10)?start.mul(3):start.lte(25)?(start.pow(2).mul(1.5).sub(start.mul(25.5))).add(135):new Decimal(3).pow(start.sub(25)).mul(48).add(387));
+    var start=nd(x);
+    return nd(10).pow(start.lte(10)?start.mul(3):start.lte(25)?(start.pow(2).mul(1.5).sub(start.mul(25.5))).add(135):nd(3).pow(start.sub(25)).mul(48).add(387));
   }
   var invU1Scaling=function invU1Scaling(x){
-    var start=new Decimal(new Decimal(x).log10()),
-    ret= start.gte(531)?new Decimal(start.sub(387).div(48).log10()).div(Decimal.log10(3)).add(25).floor():
+    var start=nd(nd(x).log10()),
+    ret= start.gte(531)?nd(start.sub(387).div(48).log10()).div(Decimal.log10(3)).add(25).floor():
            start.gte(36)?start.sub(26.625).div(1.5).sqrt().add(8.5).floor():
            start.gte(3)?start.div(3).floor():
-           new Decimal(0);
+           nd(0);
     return ret.toNumber();
   }
   // Data point obfuscation! No idea why I did this, it just exists.
@@ -67,7 +132,7 @@
   var L=new Map([["Points",".UG9pbnR"],["Round",".Um91bmQ"],["Upgrade",".VXBncmF"],["Option",".T3B0aW9"],[void 0,".VW5kZWZ"],["Last",".VGltZXI"],["Auto",".QXV0b21"]]);
   
   var createButton=function createButton(id,name,func){
-    if(debugMode)console.log(`[IdlePoll:Debug] function call createButton(${id},${name},${func});`);
+    db(`function call createButton(${id},${name},${func});`);
     var temp=document.createElement("button");
     temp.id=id;
     temp.innerHTML=`[${name}]`;
@@ -78,7 +143,7 @@
     // This function is called once, when the page is being set up.
     // Requires DOM content to be loaded.
     // Creates and sets up the HTML page.
-    if(debugMode)console.log("[IdlePoll:Debug] function call setupHTML();");
+    fc("setupHTML");
     var app=document.createElement("div"),div0=document.createElement("div"),div1=document.createElement("div"),div2=document.createElement("div"),div3=document.createElement("div");
     app.id="app";
     div1.id="idleData";
@@ -141,10 +206,11 @@
       el("U1").childNodes[1].innerHTML="&nbsp;Multiplying&nbsp;O1,&nbsp;O2's&nbsp;effects&nbsp;by&nbsp;x";
       el("U3-extra").textContent="BOUGHT";
       var pointsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
+      el("U1Effect").textContent=format(nd(1000).pow(Data[L.get("Upgrade")][1]));
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${pointsNeeded} Points`;
     }
     if(Data[L.get("Upgrade")][4]){
-      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+      el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1's&nbsp;effect&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
       el("U4-extra").textContent="BOUGHT";
       el("O1-extra").style="";
       el("O2-extra").style="";
@@ -160,36 +226,36 @@
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
     el("points").textContent=format(globalThis.Data[L.get("Points")]);
-    el("point-softcap").textContent=(globalThis.Data[L.get("Points")].gte(new Decimal("1e1000000"))?" (softcapped)":"");
+    el("point-softcap").textContent=(globalThis.Data[L.get("Points")].gte(nd("1e1000000"))?" (softcapped)":"");
     el("O1Effect").textContent=format(globalThis.Data[L.get("Option")][1]);
     el("O2Effect").textContent=format(globalThis.Data[L.get("Option")][2]);
     el("O1-extra").textContent="After U4: +"+format(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Round")]));
-    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Round")]));
+    el("O2-extra").textContent="After U4: x"+format(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Round")]))*/);
   }
   var parseDecimalData=function parseDecimalData(D,string,index){
     if(index){
-      D[L.get(string)][index]=new Decimal(D[L.get(string)][index]);
-      if(D[L.get(string)][index].toString()=="Infinity")D[L.get(string)][index]=new Decimal(Number.MAX_VALUE);
+      D[L.get(string)][index]=nd(D[L.get(string)][index]);
+      if(D[L.get(string)][index].toString()=="Infinity")D[L.get(string)][index]=nd(Number.MAX_VALUE);
       return D;
     }
-    D[L.get(string)]=new Decimal(D[L.get(string)]);
-    if(D[L.get(string)].toString()=="Infinity")D[L.get(string)]=new Decimal(Number.MAX_VALUE);
+    D[L.get(string)]=nd(D[L.get(string)]);
+    if(D[L.get(string)].toString()=="Infinity")D[L.get(string)]=nd(Number.MAX_VALUE);
     return D;
   }
   var setupData=function setupData(){
     // This function is called once, when the page is being set up.
     // Creates a DATA object to hold all data.
-    if(debugMode)console.log("[IdlePoll:Debug] function call setupData();");
+    fc("setupData");
     try{
       if(localStorage&&localStorage.getItem("idlePollSave")){
-        if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
+        db("Loaded existing save.");
         var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
         if(!Data){
           // Extremely malformatted data? Send them to the error page.
           window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
         }
         // Parse in Legacy/Malformatted data
-        if(!Data[L.get("Option")])Data[L.get("Option")]=[void 0,new Decimal(100),new Decimal(10),void 0];
+        if(!Data[L.get("Option")])Data[L.get("Option")]=[void 0,nd(100),nd(10),void 0];
         if(!Data[L.get("Upgrade")])Data[L.get("Upgrade")]=[void 0,0,0,0,0];
         if(!Data[L.get("Auto")])Data[L.get("Auto")]=[void 0,0];
         // Parse Decimals
@@ -202,15 +268,15 @@
         return Data;
       }
       // Save does not exist
-      if(debugMode)console.log("[IdlePoll:Debug] Created a new save.");
-      var Data={},obj1=[void 0,new Decimal(100),new Decimal(10),void 0],
+      db("Created a new save.");
+      var Data={},obj1=[void 0,nd(100),nd(10),void 0],
                   obj2=[void 0,0,0,0,0],
                   obj3=[void 0,0];
       L.forEach((v,k)=>{Data[v]=undefined;});
       Data[L.get("Option")]=obj1;
       Data[L.get("Upgrade")]=obj2;
       Data[L.get("Auto")]=obj3;
-      Data[L.get("Points")]=new Decimal(10);
+      Data[L.get("Points")]=nd(10);
       Data[L.get("Round")]=1;
       Data[L.get("Last")]=Date.now()-60000;
       return Data;
@@ -219,30 +285,30 @@
     }
   }
   var save=function save(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call save();");
+    fc("save");
     if(!Data){
       throw new Error("[IdlePoll] Attempted to save without a save object.");
     }
     localStorage.setItem("idlePollSave",btoa(JSON.stringify(Data)));
-    if(debugMode)console.log("[IdlePoll:Debug] Save complete.");
+    db("Save complete.");
   }
   var Export=async function Export(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call export();");
+    fc("export");
     save();
     try {
       await navigator.clipboard.writeText(localStorage.getItem("idlePollSave"));
-      if(debugMode)console.log("[IdlePoll:Debug] Exported save.");
+      db(" Exported save.");
     } catch (error) {
       console.error("[IdlePoll] "+error.message);
     }
   }
   var Import=function Import(data){
-    if(debugMode)console.log(`[IdlePoll:Debug] function call import(${data});`);
+    db(`function call import(${data});`);
     if(!JSON.parse(atob(data))){
       console.error("[IdlePoll] Malformed import data.");
       return;
     }
-    if(debugMode)console.log("[IdlePoll:Debug] Imported save.");
+    db("Imported save.");
     Data=JSON.parse(atob(data));
     Data=parseDecimalData(Data,"Points");
     Data=parseDecimalData(Data,"Option",1);
@@ -252,12 +318,12 @@
     setupVariableHTML();
   }
   var ImportClipboard=async function ImportClipboard(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call importClipboard();");
+    fc("ImportClipboard");
     var clipTxt=await navigator.clipboard.readText();
     Import(clipTxt);
   }
   var HardReset=function HardReset(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call hardReset();");
+    fc("HardReset");
     if(localStorage.getItem("idlePollSave")){
       localStorage.removeItem("idlePollSave");
     }
@@ -267,7 +333,7 @@
   var HandleAction=function HandleAction(action){
     // Handles actions.
     // All actions have a base property, that is, they advance the round and have delay.
-    if(debugMode)console.log(`[IdlePoll:Debug] function call HandleAction(${action});`);
+    db(`function call HandleAction(${action});`);
     if(Date.now()-Data[L.get("Last")]<(devMode?0:60000)){
       el("delay").textContent=randomDelayMsg();
       console.log(`[IdlePoll] Action "${action}" was prevented.`);
@@ -315,20 +381,20 @@
     save();
   }
   var O1=function O1(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call O1();");
+    fc("O1");
     Data[L.get("Points")]=Data[L.get("Points")].add(globalThis.Data[L.get("Option")][1].pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1));
   }
   var O2=function O2(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call O2();");
-    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2].pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1));
+    fc("O2");
+    Data[L.get("Points")]=Data[L.get("Points")].mul(globalThis.Data[L.get("Option")][2]/*.pow(Data[L.get("Upgrade")][4]?Data[L.get("Round")]:1))*/);
   }
   var O3=function O3(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call O3();");
+    fc("O3");
     if(!Data[L.get("Upgrade")][2])return "LOCKED: Purchase U2 to unlock";
     Data[L.get("Points")]=Data[L.get("Points")].pow(1.5);
   }
   var U1=function U1(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call U1();");
+    fc("U1");
     if(Data[L.get("Upgrade")][3]){
       // We have U3. U1 is now rebuyable.
       // See how many we can buy:
@@ -341,19 +407,20 @@
       Data[L.get("Points")]=Data[L.get("Points")].sub(pointsNeeded);
       nextPtsNeeded=U1Scaling(Data[L.get("Upgrade")][1]+1);
       el("U1-extra").textContent=`Bought x${Data[L.get("Upgrade")][1]}. Next at ${format(nextPtsNeeded)} Points`;
-      Data[L.get("Option")][1]=new Decimal(100).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
-      Data[L.get("Option")][2]=new Decimal(10).mul(new Decimal(1000).pow(Data[L.get("Upgrade")][1]));
+      Data[L.get("Option")][1]=nd(100).mul(nd(1000).pow(Data[L.get("Upgrade")][1]));
+      Data[L.get("Option")][2]=nd(10).mul(nd(1000).pow(Data[L.get("Upgrade")][1]));
     } else {
       if(Data[L.get("Upgrade")][1])return "U1 already bought";
       if(Data[L.get("Points")].lt(1000))return "Insufficient Points: Need 1000";
       el("U1-extra").textContent="BOUGHT";
       Data[L.get("Points")]=Data[L.get("Points")].sub(1000);
       Data[L.get("Upgrade")][1]=1;
-      Data[L.get("Option")][2]=new Decimal(10000);
+      Data[L.get("Option")][2]=nd(10000);
     }
+    el("U1Effect").textContent=format(nd(1000).pow(Data[L.get("Upgrade")][1]))
   }
   var U2=function U2(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call U2();");
+    fc("U2");
     if(Data[L.get("Upgrade")][2])return "U2 already bought";
     if(Data[L.get("Points")].lt(1e10))return "Insufficient Points: Need 1e10";
     el("U2-extra").textContent="BOUGHT";
@@ -363,7 +430,7 @@
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;"
   }
   var U3=function U3(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call U3();");
+    fc("U3");
     if(Data[L.get("Upgrade")][3])return "U3 already bought";
     if(Data[L.get("Points")].lt(1e50))return "Insufficient Points: Need 1e50";
     el("U3-extra").textContent="BOUGHT";
@@ -372,18 +439,18 @@
     Data[L.get("Upgrade")][3]=1;
   }
   var U4=function U4(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call U4();");
+    fc("U4");
     if(Data[L.get("Upgrade")][4])return "U4 already bought";
     if(Data[L.get("Points")].lt(1e100))return "Insufficient Points: Need 1e100";
     el("O1-extra").style="";
     el("O2-extra").style="";
     el("U4-extra").textContent="BOUGHT";
-    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1,O2's&nbsp;effects&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
+    el("U4").childNodes[1].innerHTML="&nbsp;Raise&nbsp;O1's&nbsp;effect&nbsp;to&nbsp;the&nbsp;round&nbsp;number.";
     Data[L.get("Points")]=Data[L.get("Points")].sub(1e100);
     Data[L.get("Upgrade")][4]=1;
   }
   var A1=function A1(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call A1();");
+    fc("A1");
     if(Data[L.get("Auto")][1])return "A1 already bought";
     if(Data[L.get("Points")].lt("1e3000"))return "Insufficient Points: Need 1e3000";
     el("A1-extra").textContent="BOUGHT";
@@ -391,13 +458,13 @@
     Data[L.get("Auto")][1]=1;
   }
   var A1Handler=function A1Handler(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call A1Handler();");
+    fc("A1Handler");
     O1();
     O2();
     O3();
   }
   var main=function main(){
-    if(debugMode)console.log("[IdlePoll:Debug] function call main();");
+    fc("main");
     setupHTML();
     globalThis.Data=setupData();
     setupVariableHTML();
@@ -405,9 +472,9 @@
     globalThis.Export=Export;
     globalThis.HardReset=HardReset;
     window.setInterval(updateHTML,50);
-    if(debugMode)console.log("[IdlePoll:Debug] Loading complete.");
+    db("Loading complete.");
     el("loading").style="display:none;";
   }
-  if(debugMode)console.log("[IdlePoll:Debug] Script index.js ran 1 time without issues.");
+  db("Script index.js ran 1 time without issues.");
   main();
 }).call(this);
