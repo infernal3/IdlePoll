@@ -36,7 +36,7 @@ Now in a singleplayer form, the player can have sole jurisdiction over which act
 
 The possibilities are many.
 
-
+Catalyst update coming soon!
 
 ## Acknowledgements
 
