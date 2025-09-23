@@ -65,12 +65,16 @@ var makeHTML = function makeHTML(){
     ${(data.HC>0) ? `<span id="hc">${(data.HC*100).toFixed(2)}</span>%&nbsp;Hypercatalyst&nbsp;Energy.<br>` : "" }<br>
     Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+${temp.O1Value}&nbsp;Points</span>
-    ${(data.HC>0) ? `<span id="O1e" class="aside">Absorbed</span>` : ""}
+    ${(data.HC>0) ? `<span id="O1e" class="aside">Absorbed</span>` : ""}<br>
     <span id="O2"><span class="shown">[O2]</span>&nbsp;x${temp.O2Value}&nbsp;Points</span>
-    ${(data.HC>0) ? `<span id="O2e" class="aside">Absorbed</span>` : ""}
+    ${(data.HC>0) ? `<span id="O2e" class="aside">Absorbed</span>` : ""}<br>
     <span id="O3"><span class="shown">[O3]</span>&nbsp;${(data.Upgrades[1]>0) ? `^1.5&nbsp;Points` : "LOCKED"}</span>
-    ${(data.Points.gte(new Decimal("1e1000000"))) ? `<span id="O1e" class="aside">Disabled by Softcap</span>` : ""}
+    ${(data.Points.gte(new Decimal("1e1000000"))) ? `<span id="O1e" class="aside">Disabled by Softcap</span>` : ""}<br>
     ${(data.Catalysts[3]>0) ? `<span id="O4"><span class="shown">[O4]</span>&nbsp;+${temp.O4Value}&nbsp;Rounds&nbsp;to&nbsp;C4</span>`}
+    <br>
+    <br>
+    Upgrades:<br>
+    
     `;
 }
 
