@@ -16,16 +16,7 @@ var format=function format(E){
     console.warn("[IdlePoll] Invalid input to format, returning NaN: "+E);
     return "NaN";
 }
-var DelayMsg=[  "You can only take one action every 1 minute.",
-                "Actions are delayed for up to 1 minute.",
-                "It's IDLE! Wait 1 minute to take an action.",
-                "You need to wait 1 minute for the next action.",
-                "Actions have a cooldown for 1 minute.",
-                "Actions are on cooldown for 1 minute. You're lucky it's not 1 hour.",
-                "Slow down! Wait 1 minute to take the next action.",
-                "Actions are throttled with a 1 minute delay.",
-                "You need to wait 1 minute to perform this action.",
-                "Wait 1 minute to take your next action."];
+var DelayMsg=["Wait 1 minute to take your next action."];
 var randomDelayMsg=function randomDelayMsg(){
     return DelayMsg[parseInt(Math.random()*DelayMsg.length)];
 }
