@@ -155,7 +155,7 @@
     el('click3').style=Data[L.get("Upgrade")][2]?"":"display:none;";
   }
   var updateHTML=function updateHTML(){
-    if(!globalThis.Data)window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
+    if(!globalThis.Data)console.error("[!] Missing DATA")
     // This function is called very often.
     // Updates some HTML stuff.
     el("round").textContent=globalThis.Data[L.get("Round")];
@@ -185,8 +185,8 @@
         if(debugMode)console.log("[IdlePoll:Debug] Loaded existing save.");
         var Data=JSON.parse(atob(localStorage.getItem("idlePollSave")));
         if(!Data){
-          // Extremely malformatted data? Send them to the error page.
-          window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
+          console.error("[!] Missing DATA object..")
+          //window.location.href="https://infernal3.github.io/IdlePoll/static/error.html";
         }
         // Parse in Legacy/Malformatted data
         if(!Data[L.get("Option")])Data[L.get("Option")]=[void 0,new Decimal(100),new Decimal(10),void 0];
