@@ -61,7 +61,7 @@ var makeHTML = function makeHTML(){
     return `
     Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round"></span>.<br>
     <span id="points">${data.Points}</span>&nbsp;Points.<span id="point-softcap"></span><br>
-    ${(data.totalIC.gt(0)) ? `<span id="ic">${data.IC}</span>&nbsp;Idle&nbsp;Catalysts.<br>` : "" }
+    ${(data.Unlocks[0] > 0) ? `<span id="ic">${data.IC}</span>&nbsp;Idle&nbsp;Catalysts.<br>` : "" }
     ${(data.HC>0) ? `<span id="hc">${(data.HC*100).toFixed(2)}</span>%&nbsp;Hypercatalyst&nbsp;Energy.<br>` : "" }<br>
     Options:<br>
     <span id="O1"><span class="shown">[O1]</span>&nbsp;+${temp.O1Value}&nbsp;Points</span>
