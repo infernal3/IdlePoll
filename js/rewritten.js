@@ -50,13 +50,13 @@ var baseData = {
     Upgrades: [],
     Automation: [],
     Unlocks: [],
-    Catalyst: [],
-    Round: 0,
+    Catalysts: [],
+    Round: 1,
     IC: new Decimal(0),
     totalIC: new Decimal(0),
     X4: new Decimal(0),
     X6: new Decimal(0),
-    Hypercatalyst: 0,
+    HC: 0,
 }
 var checkNaN = function checkNaN(data, checked) {
     for(const prop in checked) {
@@ -65,6 +65,22 @@ var checkNaN = function checkNaN(data, checked) {
             data[prop] = checked[prop];
         }
     }
+}
+var makeHTML = function makeHTML(){
+    return `
+    Idle&nbsp;Poll,&nbsp;Round&nbsp;#<span id="round"></span>.<br>
+    <span id="points">${data.Points}</span>&nbsp;Points.<span id="point-softcap"></span><br>
+    ${(data.totalIC.gt(0)) ? `<span id="ic">${data.IC}</span>&nbsp;Idle&nbsp;Catalysts.<br>` : "" }
+    ${(data.HC>0) ? `<span id="hc">${(data.HC*100).toFixed(2)}</span>%&nbsp;Hypercatalyst&nbsp;Energy.<br>` : "" }<br>
+    Options:<br>
+    <span id="O1"><span class="shown">[O1]</span>&nbsp;+${temp.O1Value}&nbsp;Points</span>
+    ${(data.HC>0) ? `<span id="O1e" class="aside">Absorbed</span>` : ""}
+    <span id="O2"><span class="shown">[O2]</span>&nbsp;x${temp.O2Value}&nbsp;Points</span>
+    ${(data.HC>0) ? `<span id="O2e" class="aside">Absorbed</span>` : ""}
+    <span id="O3"><span class="shown">[O3]</span>&nbsp;${(data.Upgrades[1]>0) ? `^1.5&nbsp;Points` : "LOCKED"}</span>
+    ${(data.Points.gte(new Decimal("1e1000000"))) ? `<span id="O1e" class="aside">Disabled by Softcap</span>` : ""}
+    ${(data.Catalysts[3]>0) ? `<span id="O4"><span class="shown">[O4]</span>&nbsp;+${temp.O4Value}&nbsp;Rounds&nbsp;to&nbsp;C4</span>`}
+    `;
 }
 
 (function(){
