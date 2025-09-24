@@ -74,7 +74,7 @@ var makeHTML = function makeHTML(){
     <br>
     <br>
     Upgrades:<br>
-    
+    <span id="U1"><span class="shown">[U1]</span>&nbsp;Multiply${(data.Upgrades[0]>0) ? "ing" : ""}&nbsp;${(data.Upgrades[2]>0)? "O1 and O2's effects" : "O2's&nbsp;effect"}&nbsp;by&nbsp;x<span id="U1Effect">1000</span>.</span><br>
     `;
 }
 
